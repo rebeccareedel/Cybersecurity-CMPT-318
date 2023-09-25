@@ -1,8 +1,9 @@
 # Group Project #24, Rebecca Reedel 301454910, Asmita Srivastava, Mrinal Goshalia
 
 # read dataset file
-data = read.table('Group_Assignment_1_Dataset.txt', header = )
+data = read.table('Group_Assignment_1_Dataset.txt', header =, sep =',' )
 print(data)
+
 #extract data spanning one full week from Monday to Sunday. 
 #The week assigned to your group is determined by your group number
 #data = filter(data, Date =='')
