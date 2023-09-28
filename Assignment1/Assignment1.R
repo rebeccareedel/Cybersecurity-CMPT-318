@@ -21,8 +21,10 @@ print(data)
 data$week = strftime(data$Date, format = "%a")
 data_weekdays = data[data$week != 'Sat' & data$week != 'Sat', ]
 data_weekends = data[data$week == 'Sun' | data$week == 'Sat', ]
+#code below is adapted from https://stackoverflow.com/questions/54163708/how-to-create-a-day-night-factor-from-posixct-variable
+data$daynight = with(data, ifelse(data$Time > "053000" & data$Time < "200000", "Day", "Night")) 
 
-
+print(data)
 # 1. compute arithmetic and geometric mean, median, mode and standard dev. 
 #for A, B, C features.  
 
