@@ -9,7 +9,6 @@ mode <- function(x) {
 
 # read dataset file
 data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',' )
-print(data)
 #In order to extract specific days from a time series you will need this command:
 #as.POSIXlt(date, format = "")
 
@@ -35,7 +34,7 @@ B_std <-sd(data$Global_reactive_power, na.rm=TRUE)
 
 C_a_mean <-mean(data$Voltage, na.rm=TRUE)
 C_g_mean <-exp(mean(log(data$Voltage), na.rm=TRUE))
-C_median <-median(data$Voltage)
+C_median <-median(data$Voltage, na.rm=TRUE)
 C_mode <-mode(data$Voltage) 
 C_std <-sd(data$Voltage, na.rm=TRUE)
 
