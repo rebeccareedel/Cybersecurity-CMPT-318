@@ -59,21 +59,40 @@ print(C_std)
 
 #In order to extract specific days from a time series you will need this command:
 data$week = strftime(data$Date, format = "%a")
+data$daynight = with(data, ifelse(data$Time > "053000" & data$Time < "200000", "Day", "Night")) 
+print(data)
+
+
+
 #values on weekdays and weekend days during day hours and night hours
 data_weekdays = data[data$week != 'Sat' & data$week != 'Sat', ]
 data_weekends = data[data$week == 'Sun' | data$week == 'Sat', ]
 #code below is adapted from https://stackoverflow.com/questions/54163708/how-to-create-a-day-night-factor-from-posixct-variable
-data$daynight = with(data, ifelse(data$Time > "053000" & data$Time < "200000", "Day", "Night")) 
+day_week = data_weekdays[data_weekdays$daynight == 'Day', ]
+night_week = data_weekdays[data_weekdays$daynight == 'Night', ]
 
+day_wkend = data_weekends[data_weekends$daynight == 'Day', ]
+night_wkend = data_weekends[data_weekends$daynight == 'Night', ]
+print(day_week)
 #For features A and B compute the min and max
-min_A_weekdays = min(data_weekdays$Global_active_power)
-min_A_weekends = min(data_weekends$Global_active_power)
+min_A_weekdays_day = min(day_week$Global_active_power)
+min_A_weekdays_night = min(night_week$Global_active_power)
+max_A_weekdays_day = max(day_week$Global_active_power)
+max_A_weekdays_night = max(night_week$Global_active_power)
 
-min_B_weekdays = min(data_weekdays$Global_reactive_power, na.rm=TRUE)
-min_B_weekends = min(data_weekends$Global_reactive_power, na.rm=TRUE)
+min_A_weekends_day = min(day_wkend$Global_active_power)
+min_A_weekends_night = min(night_wkend$Global_active_power)
+max_A_weekends_day = max(day_wkend$Global_active_power)
+max_A_weekends_night = max(night_wkend$Global_active_power)
 
-print(min_A_weekdays)
-print(min_A_weekends)
-print(min_B_weekdays)
-print(min_B_weekends)
+min_B_weekdays_day = min(day_week$Global_reactive_power, na.rm=TRUE)
+min_B_weekdays_night = min(night_week$Global_reactive_power, na.rm=TRUE)
+max_B_weekdays_day = max(day_week$Global_reactive_power, na.rm=TRUE)
+max_B_weekdays_night = max(night_week$Global_reactive_power, na.rm=TRUE)
+
+min_B_weekends_day = min(day_wkend$Global_reactive_power, na.rm=TRUE)
+min_B_weekends_night = min(night_wkend$Global_reactive_power, na.rm=TRUE)
+min_B_weekends_day = min(day_wkend$Global_reactive_power, na.rm=TRUE)
+min_B_weekends_night = min(night_wkend$Global_reactive_power, na.rm=TRUE)
+
 
