@@ -17,14 +17,7 @@ data$Date <- as.Date(data$Date, '%d/%m/%Y')
 data = data[data$Date >='2007-06-11' & data$Date < '2007-06-18', ]
 print(data)
 
-#In order to extract specific days from a time series you will need this command:
-data$week = strftime(data$Date, format = "%a")
-data_weekdays = data[data$week != 'Sat' & data$week != 'Sat', ]
-data_weekends = data[data$week == 'Sun' | data$week == 'Sat', ]
-#code below is adapted from https://stackoverflow.com/questions/54163708/how-to-create-a-day-night-factor-from-posixct-variable
-data$daynight = with(data, ifelse(data$Time > "053000" & data$Time < "200000", "Day", "Night")) 
 
-print(data)
 # 1. compute arithmetic and geometric mean, median, mode and standard dev. 
 #for A, B, C features.  
 
@@ -64,8 +57,23 @@ print(C_median)
 print(C_mode)
 print(C_std)
 
-#For features A and B compute the min and max
+#In order to extract specific days from a time series you will need this command:
+data$week = strftime(data$Date, format = "%a")
 #values on weekdays and weekend days during day hours and night hours
+data_weekdays = data[data$week != 'Sat' & data$week != 'Sat', ]
+data_weekends = data[data$week == 'Sun' | data$week == 'Sat', ]
+#code below is adapted from https://stackoverflow.com/questions/54163708/how-to-create-a-day-night-factor-from-posixct-variable
+data$daynight = with(data, ifelse(data$Time > "053000" & data$Time < "200000", "Day", "Night")) 
 
+#For features A and B compute the min and max
+min_A_weekdays = min(data_weekdays$Global_active_power)
+min_A_weekends = min(data_weekends$Global_active_power)
 
+min_B_weekdays = min(data_weekdays$Global_reactive_power, na.rm=TRUE)
+min_B_weekends = min(data_weekends$Global_reactive_power, na.rm=TRUE)
+
+print(min_A_weekdays)
+print(min_A_weekends)
+print(min_B_weekdays)
+print(min_B_weekends)
 
