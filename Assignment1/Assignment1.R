@@ -10,6 +10,7 @@ mode <- function(x) {
 # read dataset file
 data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',' )
 data$Date <- as.Date(data$Date, '%d/%m/%Y')
+data = na.omit(data)
 #print(data)
 
 #extract data spanning one full week from Monday to Sunday. 
@@ -27,17 +28,17 @@ A_median <-median(data$Global_active_power)
 A_mode <-mode(data$Global_active_power)
 A_std <-sd(data$Global_active_power)
 
-B_a_mean <-mean(data$Global_reactive_power, na.rm=TRUE)
-B_g_mean <-exp(mean(log(data$Global_reactive_power), na.rm=TRUE))
-B_median <-median(data$Global_reactive_power, na.rm=TRUE)
+B_a_mean <-mean(data$Global_reactive_power)
+B_g_mean <-exp(mean(log(data$Global_reactive_power)))
+B_median <-median(data$Global_reactive_power)
 B_mode <-mode(data$Global_reactive_power)  
-B_std <-sd(data$Global_reactive_power, na.rm=TRUE)
+B_std <-sd(data$Global_reactive_power)
 
-C_a_mean <-mean(data$Voltage, na.rm=TRUE)
-C_g_mean <-exp(mean(log(data$Voltage), na.rm=TRUE))
-C_median <-median(data$Voltage, na.rm=TRUE)
+C_a_mean <-mean(data$Voltage)
+C_g_mean <-exp(mean(log(data$Voltage)))
+C_median <-median(data$Voltage)
 C_mode <-mode(data$Voltage) 
-C_std <-sd(data$Voltage, na.rm=TRUE)
+C_std <-sd(data$Voltage)
 
 print(A_a_mean)
 print(A_g_mean)
@@ -85,15 +86,15 @@ min_A_weekends_night = min(night_wkend$Global_active_power)
 max_A_weekends_day = max(day_wkend$Global_active_power)
 max_A_weekends_night = max(night_wkend$Global_active_power)
 
-min_B_weekdays_day = min(day_week$Global_reactive_power, na.rm=TRUE)
-min_B_weekdays_night = min(night_week$Global_reactive_power, na.rm=TRUE)
-max_B_weekdays_day = max(day_week$Global_reactive_power, na.rm=TRUE)
-max_B_weekdays_night = max(night_week$Global_reactive_power, na.rm=TRUE)
+min_B_weekdays_day = min(day_week$Global_reactive_power)
+min_B_weekdays_night = min(night_week$Global_reactive_power)
+max_B_weekdays_day = max(day_week$Global_reactive_power)
+max_B_weekdays_night = max(night_week$Global_reactive_power)
 
-min_B_weekends_day = min(day_wkend$Global_reactive_power, na.rm=TRUE)
-min_B_weekends_night = min(night_wkend$Global_reactive_power, na.rm=TRUE)
-min_B_weekends_day = min(day_wkend$Global_reactive_power, na.rm=TRUE)
-min_B_weekends_night = min(night_wkend$Global_reactive_power, na.rm=TRUE)
+min_B_weekends_day = min(day_wkend$Global_reactive_power)
+min_B_weekends_night = min(night_wkend$Global_reactive_power)
+min_B_weekends_day = min(day_wkend$Global_reactive_power)
+min_B_weekends_night = min(night_wkend$Global_reactive_power)
 
 
 
@@ -111,3 +112,4 @@ G_val = (data$Sub_metering_3)
 
 cor_CD = cor(A_val,C_val)
 print(cor_CD)
+
