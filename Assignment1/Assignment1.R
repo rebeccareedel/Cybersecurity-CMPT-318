@@ -96,3 +96,18 @@ min_B_weekends_day = min(day_wkend$Global_reactive_power, na.rm=TRUE)
 min_B_weekends_night = min(night_wkend$Global_reactive_power, na.rm=TRUE)
 
 
+
+# Calculating the correlation coefficient
+A_val = (data$Global_active_power)
+B_val = (data$Global_reactive_power)
+C_val = (data$Voltage)
+#_val <-(data$Voltage,na.rm=TRUE)
+
+D_val = (data$Global_intensity)
+E_val = (data$Sub_metering_1)
+F_val = (data$Sub_metering_2)
+G_val = (data$Sub_metering_3)
+
+
+cor_CD = cor(A_val,C_val)
+print(cor_CD)
