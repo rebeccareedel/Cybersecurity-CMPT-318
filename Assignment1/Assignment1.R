@@ -9,28 +9,25 @@ print(data)
 #data = filter(data, Date =='')
 
 # 1. compute arithmetic and geometric mean, median, mode and standard dev. 
-#for A, B, C features. For features A and B compute the min and max
-#values on weekdays and weekend days during day hours and night hours 
+#for A, B, C features.  
 
-#The arithmetic mean (AM) = (x₁ + x₂ + x₃ + ... + xₙ) / n.
-#The geometric mean (GM) = (x₁ · x₂ · x₃ · ... · xₙ)1/n.
 A_a_mean <-mean(data$Global_active_power)
 A_g_mean <-exp(mean(log(data$Global_active_power)))
 A_median <-median(data$Global_active_power)
 #A_mode <-mode(data$Global_active_power) no built in 
 A_std <-sd(data$Global_active_power)
 
-B_a_mean <-mean(data$Global_reactive_power)
-B_g_mean <-exp(mean(log(data$Global_reactive_power)))
-B_median <-median(data$Global_reactive_power)
-#B_mode <-mode(data$Global_reactive_power) no built in 
-B_std <-sd(data$Global_reactive_power)
+B_a_mean <-mean(data$Global_reactive_power, na.rm=TRUE)
+B_g_mean <-exp(mean(log(data$Global_reactive_power), na.rm=TRUE))
+B_median <-median(data$Global_reactive_power, na.rm=TRUE)
+#B_mode <-mode(data$Global_reactive_power, na.rm=TRUE) no built in 
+B_std <-sd(data$Global_reactive_power, na.rm=TRUE)
 
-C_a_mean <-mean(data$Voltage)
-C_g_mean <-exp(mean(log(data$Voltage)))
-C_median <-median(data$Voltage)
-#C_mode <-mode(data$Voltage) no built in 
-C_std <-sd(data$Voltage)
+C_a_mean <-mean(data$Voltage, na.rm=TRUE)
+C_g_mean <-exp(mean(log(data$Voltage), na.rm=TRUE))
+C_median <-median(data$Voltage, na.rm=TRUE)
+#C_mode <-mode(data$Voltage, na.rm=TRUE) no built in 
+C_std <-sd(data$Voltage, na.rm=TRUE)
 
 print(A_a_mean)
 print(A_g_mean)
@@ -50,6 +47,8 @@ print(C_median)
 #print(C_mode)
 print(C_std)
 
+#For features A and B compute the min and max
+#values on weekdays and weekend days during day hours and night hours
 
 #In order to extract specific days from a time series you will need this command:
   #as.POSIXlt(date, format = ""
