@@ -1,4 +1,4 @@
-# Group Project #24, Rebecca Reedel 301454910, Asmita Srivastava, Mrinal Goshalia
+# Group Project #24, Rebecca Reedel 301454910, Asmita Srivastava 301436340, Mrinal Goshalia
 
 # mode function adapted from https://statisticsglobe.com/mode-in-r-programming-example
 mode <- function(x) {                   
@@ -9,10 +9,14 @@ mode <- function(x) {
 
 # read dataset file
 data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',' )
+print(data)
+#In order to extract specific days from a time series you will need this command:
+#as.POSIXlt(date, format = "")
 
 #extract data spanning one full week from Monday to Sunday. 
 #The week assigned to your group is determined by your group number
-#data = filter(data, Date =='')
+data = data[data$Date >='11/06/2007' & data$Date < '18/06/2007', ]
+print(data)
 
 # 1. compute arithmetic and geometric mean, median, mode and standard dev. 
 #for A, B, C features.  
@@ -56,6 +60,5 @@ print(C_std)
 #For features A and B compute the min and max
 #values on weekdays and weekend days during day hours and night hours
 
-#In order to extract specific days from a time series you will need this command:
-  #as.POSIXlt(date, format = ""
+
 
