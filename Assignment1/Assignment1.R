@@ -9,13 +9,19 @@ mode <- function(x) {
 
 # read dataset file
 data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',' )
-#In order to extract specific days from a time series you will need this command:
-#as.POSIXlt(date, format = "")
+data$Date <- as.Date(data$Date, '%d/%m/%Y')
+#print(data)
 
 #extract data spanning one full week from Monday to Sunday. 
 #The week assigned to your group is determined by your group number
-data = data[data$Date >='11/06/2007' & data$Date < '18/06/2007', ]
+data = data[data$Date >='2007-06-11' & data$Date < '2007-06-18', ]
 print(data)
+
+#In order to extract specific days from a time series you will need this command:
+data$week = strftime(data$Date, format = "%a")
+data_weekdays = data[data$week != 'Sat' & data$week != 'Sat', ]
+data_weekends = data[data$week == 'Sun' | data$week == 'Sat', ]
+
 
 # 1. compute arithmetic and geometric mean, median, mode and standard dev. 
 #for A, B, C features.  
