@@ -5,6 +5,8 @@ library(corrplot)
 library(Hmisc)
 library(ggplot2)
 
+###PART 1 
+
 # mode function adapted from https://statisticsglobe.com/mode-in-r-programming-example
 mode <- function(x) {                   
   unique_x <- unique(x)
@@ -20,8 +22,9 @@ data = na.omit(data)
 
 #extract data spanning one full week from Monday to Sunday. 
 #The week assigned to your group is determined by your group number
+#As per our group number, we extracted Week 24 of 2007 which is June 11-June 17
 data = data[data$Date >='2007-06-11' & data$Date < '2007-06-18', ]
-print(data)
+#print(data)
 
 
 # 1. compute arithmetic and geometric mean, median, mode and standard dev. 
@@ -64,16 +67,14 @@ print(C_mode)
 print(C_std)
 
 #In order to extract specific days from a time series you will need this command:
+#code below is adapted from https://stackoverflow.com/questions/54163708/how-to-create-a-day-night-factor-from-posixct-variable
 data$week = strftime(data$Date, format = "%a")
-data$daynight = with(data, ifelse(data$Time > "053000" & data$Time < "193000", "Day", "Night")) 
+data$daynight = with(data, ifelse(data$Time > "060000" & data$Time < "200000", "Day", "Night")) 
 print(data)
-
-
 
 #values on weekdays and weekend days during day hours and night hours
 data_weekdays = data[data$week != 'Sat' & data$week != 'Sat', ]
 data_weekends = data[data$week == 'Sun' | data$week == 'Sat', ]
-#code below is adapted from https://stackoverflow.com/questions/54163708/how-to-create-a-day-night-factor-from-posixct-variable
 
 day_week = data_weekdays[data_weekdays$daynight == 'Day', ]
 night_week = data_weekdays[data_weekdays$daynight == 'Night', ]
@@ -81,6 +82,7 @@ night_week = data_weekdays[data_weekdays$daynight == 'Night', ]
 day_wkend = data_weekends[data_weekends$daynight == 'Day', ]
 night_wkend = data_weekends[data_weekends$daynight == 'Night', ]
 print(day_week)
+
 #For features A and B compute the min and max
 min_A_weekdays_day = min(day_week$Global_active_power)
 print(min_A_weekdays_day)
@@ -150,7 +152,8 @@ rcorr(as.matrix(df))
 corrplot(cor(df))
 
 
-#PART3
+###PART3
+
 #Create 4 time series with averaged Global_intensity values over grouped times.
 #Code for the following aggregate function is adapted from https://statisticsglobe.com/r-sum-by-group-example
 
@@ -172,7 +175,6 @@ grouped_wkendday = aggregate(x = day_wkend$Global_intensity,                # Sp
 grouped_wkendnight = aggregate(x = night_wkend$Global_intensity,                # Specify data column
                                by = list(night_wkend$Time),              # Specify group indicator
                                FUN = mean) 
-print(grouped_weekday)
 
 # convert Group.1 to a time format so it can be used for plotting
 grouped_weekday$Group.1 <- as.POSIXct(grouped_weekday$Group.1, format = "%H:%M:%S")
@@ -182,9 +184,13 @@ grouped_wkendnight$Group.1 <- as.POSIXct(grouped_wkendnight$Group.1, format = "%
 
 # linear regression for each time series with LSM
 linear_weekday <- lm(x ~ Group.1, data=grouped_weekday)
+#plot(grouped_weekday$Group.1, linear_weekday$residuals)
+#plot(grouped_weekday$Group.1, grouped_weekday$x)
+#abline(linear_weekday)
 linear_weeknight <- lm(x ~ Group.1, data=grouped_weeknight)
 linear_wkendday <- lm(x ~ Group.1, data=grouped_wkendday)
 linear_wkendnight <- lm(x ~ Group.1, data=grouped_wkendnight)
+
 
 # create the combined plot for all linear fits
 ggplot() +
@@ -215,4 +221,6 @@ ggplot() +
   stat_smooth(method = "lm", se = FALSE) +
   labs(title="Polynomial Regression-> Time vs. Global Intensity", x = "Time", y = "Global Intensity")+
   scale_color_manual(values = c("Week Day" = "red", "Week Night" = "blue", "Weekend Day" = "purple", "Weekend Night" = "green"))
+
+
 
