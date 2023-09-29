@@ -3,6 +3,7 @@ install.packages("corrplot")
 install.packages("Hmisc")
 library(corrplot)
 library(Hmisc)
+library(ggplot2)
 
 # mode function adapted from https://statisticsglobe.com/mode-in-r-programming-example
 mode <- function(x) {                   
@@ -172,9 +173,46 @@ grouped_wkendnight = aggregate(x = night_wkend$Global_intensity,                
                                by = list(night_wkend$Time),              # Specify group indicator
                                FUN = mean) 
 print(grouped_weekday)
-#Plot linear regression using LSM
-#This is wrong but it should be done somewhat like this :(
-#fit_linear <- lm(x ~ Group.1, grouped_weekday)
-#plot(fit_linear)
 
+# convert Group.1 to a time format so it can be used for plotting
+grouped_weekday$Group.1 <- as.POSIXct(grouped_weekday$Group.1, format = "%H:%M:%S")
+grouped_weeknight$Group.1 <- as.POSIXct(grouped_weeknight$Group.1, format = "%H:%M:%S")
+grouped_wkendday$Group.1 <- as.POSIXct(grouped_wkendday$Group.1, format = "%H:%M:%S")
+grouped_wkendnight$Group.1 <- as.POSIXct(grouped_wkendnight$Group.1, format = "%H:%M:%S")
+
+# linear regression for each time series with LSM
+linear_weekday <- lm(x ~ Group.1, data=grouped_weekday)
+linear_weeknight <- lm(x ~ Group.1, data=grouped_weeknight)
+linear_wkendday <- lm(x ~ Group.1, data=grouped_wkendday)
+linear_wkendnight <- lm(x ~ Group.1, data=grouped_wkendnight)
+
+# create the combined plot for all linear fits
+ggplot() +
+  geom_line(data=grouped_weekday, aes(x =Group.1, y = x, color = "Week Day")) +
+  geom_line(data =grouped_weeknight, aes(x =Group.1, y = x, color = "Week Night")) +
+  geom_line(data =grouped_wkendday, aes(x =Group.1, y = x, color = "Weekend Day")) +
+  geom_line(data =grouped_wkendnight, aes(x =Group.1, y = x, color = "Weekend Night")) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) +
+  labs(title="Linear Regression -> Time vs. Global Intensity", x = "Time", y = "Global Intensity")+
+  scale_color_manual(values = c("Week Day" = "red", "Week Night" = "blue", "Weekend Day" = "purple", "Weekend Night" = "green"))
+   
+
+# polynomial regression for each time series with LSM
+degree <- 3 # modify to get nicer fit
+poly_weekday <- lm(x ~ poly(Group.1, degree, raw=TRUE), data=grouped_weekday)
+poly_weeknight <- lm(x ~ poly(Group.1, degree, raw=TRUE), data=grouped_weeknight)
+poly_wkendday <- lm(x ~ poly(Group.1, degree, raw=TRUE), data=grouped_wkendday)
+poly_wkendnight <- lm(x ~ poly(Group.1, degree, raw=TRUE), data=grouped_wkendnight)
+
+# create the combined plot for all linear fits
+ggplot() +
+  geom_line(data=grouped_weekday, aes(x =Group.1, y = x, color = "Week Day")) +
+  geom_line(data =grouped_weeknight, aes(x =Group.1, y = x, color = "Week Night")) +
+  geom_line(data =grouped_wkendday, aes(x =Group.1, y = x, color = "Weekend Day")) +
+  geom_line(data =grouped_wkendnight, aes(x =Group.1, y = x, color = "Weekend Night")) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) +
+  labs(title="Polynomial Regression-> Time vs. Global Intensity", x = "Time", y = "Global Intensity")+
+  scale_color_manual(values = c("Week Day" = "red", "Week Night" = "blue", "Weekend Day" = "purple", "Weekend Night" = "green"))
 
