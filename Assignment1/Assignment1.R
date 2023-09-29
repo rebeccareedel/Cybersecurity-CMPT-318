@@ -1,4 +1,8 @@
 # Group Project #24, Rebecca Reedel 301454910, Asmita Srivastava 301436340, Mrinal Goshalia
+install.packages("corrplot")
+install.packages("Hmisc")
+library(corrplot)
+library(Hmisc)
 
 # mode function adapted from https://statisticsglobe.com/mode-in-r-programming-example
 mode <- function(x) {                   
@@ -115,21 +119,35 @@ print(max_B_weekends_night)
 
 
 
-
+### PART 2
 
 # Calculating the correlation coefficient
 A_val = (data$Global_active_power)
 B_val = (data$Global_reactive_power)
 C_val = (data$Voltage)
-#_val <-(data$Voltage,na.rm=TRUE)
-
 D_val = (data$Global_intensity)
 E_val = (data$Sub_metering_1)
 F_val = (data$Sub_metering_2)
 G_val = (data$Sub_metering_3)
 
-cor_CD = cor(A_val,C_val)
-print(cor_CD)
+# store all values into a dataframe
+df <- data.frame(A=c(A_val),
+                 B=c(B_val),
+                 C= c(C_val),
+                 D=c(D_val),
+                 E=c(E_val),
+                 F=c(F_val),
+                 G=c(G_val))
+
+# find the correlation coefficients for each disjoint pair 
+cor(df)
+
+# display the correlation coefficients as disjoint pairs 
+rcorr(as.matrix(df))
+
+# plot 
+corrplot(cor(df))
+
 
 #PART3
 #Create 4 time series with averaged Global_intensity values over grouped times.
@@ -141,20 +159,22 @@ grouped_weekday = aggregate(x = day_week$Global_intensity,                # Spec
 
 
 grouped_weeknight = aggregate(x = night_week$Global_intensity,                # Specify data column
-                            by = list(night_week$Time),              # Specify group indicator
-                            FUN = mean) 
+                              by = list(night_week$Time),              # Specify group indicator
+                              FUN = mean) 
 
 
 grouped_wkendday = aggregate(x = day_wkend$Global_intensity,                # Specify data column
-                              by = list(day_wkend$Time),              # Specify group indicator
-                              FUN = mean) 
+                             by = list(day_wkend$Time),              # Specify group indicator
+                             FUN = mean) 
 
 
 grouped_wkendnight = aggregate(x = night_wkend$Global_intensity,                # Specify data column
-                              by = list(night_wkend$Time),              # Specify group indicator
-                              FUN = mean) 
+                               by = list(night_wkend$Time),              # Specify group indicator
+                               FUN = mean) 
 print(grouped_weekday)
 #Plot linear regression using LSM
 #This is wrong but it should be done somewhat like this :(
 #fit_linear <- lm(x ~ Group.1, grouped_weekday)
 #plot(fit_linear)
+
+
