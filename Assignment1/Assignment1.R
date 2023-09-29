@@ -60,7 +60,7 @@ print(C_std)
 
 #In order to extract specific days from a time series you will need this command:
 data$week = strftime(data$Date, format = "%a")
-data$daynight = with(data, ifelse(data$Time > "053000" & data$Time < "200000", "Day", "Night")) 
+data$daynight = with(data, ifelse(data$Time > "053000" & data$Time < "193000", "Day", "Night")) 
 print(data)
 
 
@@ -69,6 +69,7 @@ print(data)
 data_weekdays = data[data$week != 'Sat' & data$week != 'Sat', ]
 data_weekends = data[data$week == 'Sun' | data$week == 'Sat', ]
 #code below is adapted from https://stackoverflow.com/questions/54163708/how-to-create-a-day-night-factor-from-posixct-variable
+
 day_week = data_weekdays[data_weekdays$daynight == 'Day', ]
 night_week = data_weekdays[data_weekdays$daynight == 'Night', ]
 
@@ -77,24 +78,42 @@ night_wkend = data_weekends[data_weekends$daynight == 'Night', ]
 print(day_week)
 #For features A and B compute the min and max
 min_A_weekdays_day = min(day_week$Global_active_power)
+print(min_A_weekdays_day)
 min_A_weekdays_night = min(night_week$Global_active_power)
+print(min_A_weekdays_night)
 max_A_weekdays_day = max(day_week$Global_active_power)
+print(max_A_weekdays_day)
 max_A_weekdays_night = max(night_week$Global_active_power)
+print(max_A_weekdays_night)
 
 min_A_weekends_day = min(day_wkend$Global_active_power)
+print(min_A_weekends_day)
 min_A_weekends_night = min(night_wkend$Global_active_power)
+print(min_A_weekends_night)
 max_A_weekends_day = max(day_wkend$Global_active_power)
+print(max_A_weekends_day)
 max_A_weekends_night = max(night_wkend$Global_active_power)
+print(max_A_weekends_night)
 
 min_B_weekdays_day = min(day_week$Global_reactive_power)
+print(min_B_weekdays_day)
 min_B_weekdays_night = min(night_week$Global_reactive_power)
+print(min_B_weekdays_night)
 max_B_weekdays_day = max(day_week$Global_reactive_power)
+print(max_B_weekdays_day)
 max_B_weekdays_night = max(night_week$Global_reactive_power)
+print(max_B_weekdays_night)
 
 min_B_weekends_day = min(day_wkend$Global_reactive_power)
+print(min_B_weekends_day)
 min_B_weekends_night = min(night_wkend$Global_reactive_power)
-min_B_weekends_day = min(day_wkend$Global_reactive_power)
-min_B_weekends_night = min(night_wkend$Global_reactive_power)
+print(min_B_weekends_night)
+max_B_weekends_day = max(day_wkend$Global_reactive_power)
+print(max_B_weekends_day)
+max_B_weekends_night = max(night_wkend$Global_reactive_power)
+print(max_B_weekends_night)
+
+
 
 
 
@@ -109,7 +128,33 @@ E_val = (data$Sub_metering_1)
 F_val = (data$Sub_metering_2)
 G_val = (data$Sub_metering_3)
 
-
 cor_CD = cor(A_val,C_val)
 print(cor_CD)
 
+#PART3
+#Create 4 time series with averaged Global_intensity values over grouped times.
+#Code for the following aggregate function is adapted from https://statisticsglobe.com/r-sum-by-group-example
+
+grouped_weekday = aggregate(x = day_week$Global_intensity,                # Specify data column
+                            by = list(day_week$Time),              # Specify group indicator
+                            FUN = mean) 
+
+
+grouped_weeknight = aggregate(x = night_week$Global_intensity,                # Specify data column
+                            by = list(night_week$Time),              # Specify group indicator
+                            FUN = mean) 
+
+
+grouped_wkendday = aggregate(x = day_wkend$Global_intensity,                # Specify data column
+                              by = list(day_wkend$Time),              # Specify group indicator
+                              FUN = mean) 
+
+
+grouped_wkendnight = aggregate(x = night_wkend$Global_intensity,                # Specify data column
+                              by = list(night_wkend$Time),              # Specify group indicator
+                              FUN = mean) 
+print(grouped_weekday)
+#Plot linear regression using LSM
+#This is wrong but it should be done somewhat like this :(
+#fit_linear <- lm(x ~ Group.1, grouped_weekday)
+#plot(fit_linear)
