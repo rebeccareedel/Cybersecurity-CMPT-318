@@ -204,23 +204,86 @@ ggplot() +
   scale_color_manual(values = c("Week Day" = "red", "Week Night" = "blue", "Weekend Day" = "purple", "Weekend Night" = "green"))
    
 
-# polynomial regression for each time series with LSM
+# polynomial regression for each time series 
 degree <- 3 # modify to get nicer fit
 poly_weekday <- lm(x ~ poly(Group.1, degree, raw=TRUE), data=grouped_weekday)
 poly_weeknight <- lm(x ~ poly(Group.1, degree, raw=TRUE), data=grouped_weeknight)
 poly_wkendday <- lm(x ~ poly(Group.1, degree, raw=TRUE), data=grouped_wkendday)
 poly_wkendnight <- lm(x ~ poly(Group.1, degree, raw=TRUE), data=grouped_wkendnight)
 
-# create the combined plot for all linear fits
+# create the combined plot for all poly fits
 ggplot() +
   geom_line(data=grouped_weekday, aes(x =Group.1, y = x, color = "Week Day")) +
   geom_line(data =grouped_weeknight, aes(x =Group.1, y = x, color = "Week Night")) +
   geom_line(data =grouped_wkendday, aes(x =Group.1, y = x, color = "Weekend Day")) +
   geom_line(data =grouped_wkendnight, aes(x =Group.1, y = x, color = "Weekend Night")) +
   geom_point() +
-  stat_smooth(method = "lm", se = FALSE) +
+  stat_smooth(method = "lm", formula = y~poly(x,2), se = FALSE) +
   labs(title="Polynomial Regression-> Time vs. Global Intensity", x = "Time", y = "Global Intensity")+
   scale_color_manual(values = c("Week Day" = "red", "Week Night" = "blue", "Weekend Day" = "purple", "Weekend Night" = "green"))
 
+########################### ADDED STUFF
+# Load the necessary libraries
+library(ggplot2)
+library(gridExtra)
 
+# Define a function for linear regression
+perform_linear_regression <- function(data, title) {
+  linear_model <- lm(x ~ Group.1, data = data)
+  
+  # Create a ggplot for the linear regression
+  linear_plot <- ggplot(data, aes(x = Group.1, y = x)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE, color = "red") +
+    labs(title = title, x = "Time", y = "Global Intensity")
+  
+  return(list(model = linear_model, plot = linear_plot))
+}
+
+# Define a function for polynomial regression
+perform_polynomial_regression <- function(data, degree, title) {
+  poly_model <- lm(x ~ poly(Group.1, degree, raw = TRUE), data = data)
+  
+  # Create a ggplot for the polynomial regression
+  poly_plot <- ggplot(data, aes(x = Group.1, y = x))+
+    geom_point() +
+    geom_smooth(method = "lm", formula = y ~ poly(x, degree), se = FALSE, color = "red") +
+    labs(title = title, x = "Time", y = "Global Intensity")
+  
+  return(list(model = poly_model, plot = poly_plot))
+}
+
+# Perform linear regression for each time series
+linear_weekday_result <- perform_linear_regression(grouped_weekday, "Linear Regression - Weekday")
+linear_weeknight_result <- perform_linear_regression(grouped_weeknight, "Linear Regression - Weeknight")
+linear_wkendday_result <- perform_linear_regression(grouped_wkendday, "Linear Regression - Weekend Day")
+linear_wkendnight_result <- perform_linear_regression(grouped_wkendnight, "Linear Regression - Weekend Night")
+
+# Perform polynomial regression for each time series
+degree <- 5  # Modify the degree as needed
+poly_weekday_result <- perform_polynomial_regression(grouped_weekday, degree, "Polynomial Regression - Weekday")
+poly_weeknight_result <- perform_polynomial_regression(grouped_weeknight, degree, "Polynomial Regression - Weeknight")
+poly_wkendday_result <- perform_polynomial_regression(grouped_wkendday, degree, "Polynomial Regression - Weekend Day")
+poly_wkendnight_result <- perform_polynomial_regression(grouped_wkendnight, degree, "Polynomial Regression - Weekend Night")
+
+# Combine all plots into one grid
+linear_plots <- grid.arrange(
+  linear_weekday_result$plot,
+  linear_weeknight_result$plot,
+  linear_wkendday_result$plot,
+  linear_wkendnight_result$plot,
+  ncol = 2
+)
+
+poly_plots <- grid.arrange(
+  poly_weekday_result$plot,
+  poly_weeknight_result$plot,
+  poly_wkendday_result$plot,
+  poly_wkendnight_result$plot,
+  ncol = 2
+)
+
+# Print the combined plots
+print(linear_plots)
+print(poly_plots)
 
