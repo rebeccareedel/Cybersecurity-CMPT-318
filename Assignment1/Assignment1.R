@@ -191,6 +191,22 @@ linear_weeknight <- lm(x ~ Group.1, data=grouped_weeknight)
 linear_wkendday <- lm(x ~ Group.1, data=grouped_wkendday)
 linear_wkendnight <- lm(x ~ Group.1, data=grouped_wkendnight)
 
+ggplot() +
+  geom_smooth(aes(x = Group.1, y = x), data = grouped_weekday, 
+              method = "lm", se = FALSE, color = "red") + 
+  geom_smooth(aes(x = Group.1, y = x), data = grouped_weeknight, 
+              method = "lm", se = FALSE, color = "blue") + 
+  geom_smooth(aes(x = Group.1, y = x), data = grouped_wkendday, 
+              method = "lm", se = FALSE, color = "purple") + 
+  geom_smooth(aes(x = Group.1, y = x), data = grouped_wkendnight, 
+              method = "lm", se = FALSE, color = "green") + 
+  geom_point(aes(x = Group.1, y = x), data = grouped_weekday, color = "red") + 
+  geom_point(aes(x = Group.1, y = x), data = grouped_weeknight, color = "blue")+
+  geom_point(aes(x = Group.1, y = x), data = grouped_wkendday, color = "purple") +
+  geom_point(aes(x = Group.1, y = x), data = grouped_wkendnight, color = "green")+
+  labs(title="Linear Regression -> Time vs. Global Intensity", x = "Time", y = "Global Intensity")+
+  scale_color_manual(values = c("Week Day" = "red", "Week Night" = "blue", "Weekend Day" = "purple", "Weekend Night" = "green"))
+
 
 # create the combined plot for all linear fits
 ggplot() +
@@ -200,7 +216,7 @@ ggplot() +
   geom_line(data =grouped_wkendnight, aes(x =Group.1, y = x, color = "Weekend Night")) +
   geom_point() +
   stat_smooth(method = "lm", se = FALSE) +
-  labs(title="Linear Regression -> Time vs. Global Intensity", x = "Time", y = "Global Intensity")+
+  labs(title="Linear Regression -> Time vs. Global Intensity", x = "Time", y = "Global Intensity") +
   scale_color_manual(values = c("Week Day" = "red", "Week Night" = "blue", "Weekend Day" = "purple", "Weekend Night" = "green"))
    
 
