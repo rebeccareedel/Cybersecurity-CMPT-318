@@ -3,7 +3,7 @@ library(dplyr)
 library(lubridate)
 library(zoo)
 
-#PART 2
+#PART 2#
 data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',') 
 data$Date <- as.Date(data$Date, '%d/%m/%Y')
 data$Week = strftime(data$Date, format = "%V")
