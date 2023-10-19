@@ -2,6 +2,7 @@
 library(dplyr)
 library(lubridate)
 library(zoo)
+library(ggplot2)
 
 #PART 2
 data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',') 
@@ -15,7 +16,7 @@ data <- data %>%
 
 # calculate average smoothed week
 weekly_data <- aggregate(Moving_Avg_Global_intensity ~ Week, data, FUN = mean, na.rm = TRUE)
--
+
 # calculates anomaly score for every week
 data$AnomalyScore <- abs(data$Moving_Avg_Global_intensity - weekly_data$Moving_Avg_Global_intensity[match(data$Week, weekly_data$Week)])
 
