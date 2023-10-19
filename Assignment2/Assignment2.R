@@ -41,5 +41,6 @@ ggplot(data, aes(x = Date, y = Moving_Avg_Global_intensity)) +
   geom_line(data = least_anomalous_data, aes(x = Date, y = Moving_Avg_Global_intensity, color = "Least Anomalous Week")) +
   scale_color_manual(values = c("Smoothened Weeks" = "darkblue", "Most Anomalous Week" = "orange", "Least Anomalous Week" = "turquoise")) +
   labs(title = "Comparing Weekly Global Intensities", y = "Average Global Intensity") +
-  theme_minimal()
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
