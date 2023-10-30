@@ -8,6 +8,7 @@ library(dplyr)
 
 data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',') 
 print(data)
+data$Date = as.Date(data$Date, '%d/%m/%Y')
 data$Time = as.POSIXct(data$Time, format = '%H:%M:%S')
 data$week = strftime(data$Date, format = "%a")
 data = na.omit(data)
