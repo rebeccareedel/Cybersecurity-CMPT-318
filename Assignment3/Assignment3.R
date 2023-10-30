@@ -10,7 +10,7 @@ data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',')
 
 # convert data to be numeric
 data$Date = as.Date(data$Date, '%d/%m/%Y')
-#data$Time = as.POSIXct(data$Time, format = '%H:%M:%S')
+data$Time = as.POSIXct(data$Time, format = '%H:%M:%S')
 data$week = strftime(data$Date, format = "%V")
 data = na.omit(data)
 
@@ -40,6 +40,7 @@ print(grouped_data)
 # For each HMM, compute the log-likelihood measure on the training dataset
 
 # for each HMM, compute the Bayesian information criterion (BIC) = measure of complexity of model
+# NOTE: want highest log-like and lowest BIC
 
 # goal is to find the intercept of the two plots for log-likelihood
 # and BIC values respectively so as to determine the best model (avoiding overfitting).
