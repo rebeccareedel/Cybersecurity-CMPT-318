@@ -5,7 +5,11 @@ library(depmixS4)
 library(tidyverse)
 
 data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',') 
+
 #TODO: scale data, data needs to be numeric first
+data$Global_reactive_power <- as.numeric(data$Global_active_power)
+scaled_data <- scale(data$Global_reactive_power)
+
 data$week = strftime(data$Date, format = "%a")
 # Group data by time windows and calculate mean of Global Intensity
 data = data %>%
