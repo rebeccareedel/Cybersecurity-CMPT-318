@@ -35,9 +35,21 @@ time_window = subset(time_window, select = c(Time, Global_reactive_power))
 time_window = na.omit(time_window)
 # train a number of univariate HMMs, with number of states >=3, <=16
 n = rep(c(240),each=52)
-model <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 10, ntimes = n)
-fitModel <- fit(model)
-summary(fitModel)
+model1 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 4, ntimes = n)
+fit1 <- fit(model1)
+summary(fit1)
+
+model2 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 8, ntimes = n)
+fit2 <- fit(model2)
+summary(fit2)
+
+model3 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 12, ntimes = n)
+fit3 <- fit(model3)
+summary(fit3)
+
+model4 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 16, ntimes = n)
+fit4 <- fit(model4)
+summary(fit4)
 
 # NOTE: You may not need to train HMMs for each and every number of states within the range by
 # making smart choices.
@@ -46,6 +58,10 @@ summary(fitModel)
 
 # for each HMM, compute the Bayesian information criterion (BIC) = measure of complexity of model
 # NOTE: want highest log-like and lowest BIC
+print(BIC(fit1))
+print(BIC(fit2))
+print(BIC(fit3))
+print(BIC(fit4))
 
 # goal is to find the intercept of the two plots for log-likelihood
 # and BIC values respectively so as to determine the best model (avoiding overfitting).
