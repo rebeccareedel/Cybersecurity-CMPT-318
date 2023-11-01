@@ -67,17 +67,30 @@ print(BIC(fit1))
 print(BIC(fit2))
 print(BIC(fit3))
 print(BIC(fit4))
-
 # Collect BIC and log-likelihood values for all fits
 BIC_values <- c(BIC(fit1), BIC(fit2), BIC(fit3), BIC(fit4))
 logLik_values <- c(logLik(fit1), logLik(fit2), logLik(fit3), logLik(fit4))
 
-# Create a data frame with model numbers, BIC, and log-likelihood values
-model_data <- data.frame(Model = 1:4, BIC = BIC_values, LogLik = logLik_values)
+# Find the index of the minimum absolute difference between BIC and log-likelihood
+best_model_index <- which.min(abs(BIC_values - logLik_values))
+
+# Extract the model number where the intercept occurs
+best_model <- best_model_index + 2  # Adding 2 because indexing starts from 1 and you have 4 models
+
+# Print the index and model number with the best balance
+cat("The best model is at index:", best_model_index, "with model number:", best_model)
 
 library(ggplot2)
 
-# Use ggplot to plot BIC and log-likelihood values on the same graph
+# Assuming BIC_values and logLik_values are defined as per the previous calculation
+
+# Create a data frame with model numbers, BIC, and log-likelihood values
+model_data <- data.frame(Model = 1:4, BIC = BIC_values, LogLik = logLik_values)
+
+# Calculate the minimum difference index
+best_model_index <- which.min(abs(BIC_values - logLik_values))
+
+# Plot BIC and log-likelihood values
 ggplot(model_data, aes(x = Model)) +
   geom_line(aes(y = BIC, color = "BIC"), linetype = "solid") +
   geom_line(aes(y = LogLik, color = "Log-Likelihood"), linetype = "dashed") +
@@ -85,6 +98,6 @@ ggplot(model_data, aes(x = Model)) +
   labs(x = "Model", y = "Values") +
   theme_minimal() +
   ggtitle("Comparison of BIC and Log-Likelihood for Models") +
-  geom_vline(xintercept = which(diff(sign(BIC_values - logLik_values)) != 0), linetype = "dotted", color = "green") +
-  annotate("point", x = which(diff(sign(BIC_values - logLik_values)) != 0), y = BIC_values[which(diff(sign(BIC_values - logLik_values)) != 0)], color = "green")
+  geom_vline(xintercept = best_model_index, linetype = "dotted", color = "green") +
+  annotate("point", x = best_model_index, y = BIC_values[best_model_index], color = "green")
 
