@@ -10,28 +10,28 @@ data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',')
 
 # convert data to be numeric
 data$Date = as.Date(data$Date, '%d/%m/%Y')
-#data$Time = as.POSIXct(data$Time, format = '%H:%M:%S')
-data$week = strftime(data$Date, format = "%V")
+data$Time = as.POSIXct(data$Time, format = '%H:%M:%S')
+data$weekno = strftime(data$Date, format = "%V")
+data$weekday = strftime(data$Date, format = "%a")
 data = na.omit(data)
 
 # scale data
 scaled_data = data %>% mutate(across(where(is.numeric), scale))
 print(scaled_data)
 
+data_sat = scaled_data[scaled_data$weekday == 'Sat' & scaled_data$weekno == '01', ]
+data_satall = scaled_data[scaled_data$weekday == 'Sat', ]
+
+plot(data_sat$Time, data_sat$Global_reactive_power)
+
+plot(data_satall$Time, data_satall$Global_reactive_power)
+
 # determine a time window for a specific weekday that shows a
 #clearly recognizable electricity consumption pattern over a time period  >120 &<240 minutes. 
 # for global_reactive_power
-grouped_data = scaled_data[scaled_data$Time > "183000" & scaled_data$Time < "210000", ]
-grouped_data = grouped_data$Global_reactive_power
-print(grouped_data)
-grouped_data = aggregate(x = scaled_data$Global_reactive_power,                # Specify data column
-                            by = list(scaled_data$week),              # Specify group indicator
-                            FUN = mean) 
-
-print(grouped_data)
 # Extract the same time window for each week of the dataset
 
-# concatenate the extracted time windows to build a dataset for the training of HMMs
+time_window = data_satall[data_satall$Time >= "2023-11-01 00:00:00" & data_satall$Time < "2023-11-01 04:00:00", ]
 
 # train a number of univariate HMMs, with number of states >=3, <=16
 # NOTE: You may not need to train HMMs for each and every number of states within the range by
