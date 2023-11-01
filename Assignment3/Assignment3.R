@@ -33,6 +33,7 @@ plot(data_monall$Time, data_monall$Global_reactive_power)
 time_window = data_monall[data_monall$Time >= "2023-11-01 10:00:00" & data_monall$Time < "2023-11-01 14:00:00", ]
 time_window = subset(time_window, select = c(Time, Global_reactive_power))
 time_window = na.omit(time_window)
+
 # train a number of univariate HMMs, with number of states >=3, <=16
 n = rep(c(240),each=52)
 model1 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 4, ntimes = n)
@@ -55,6 +56,10 @@ summary(fit4)
 # making smart choices.
 
 # For each HMM, compute the log-likelihood measure on the training dataset
+print(logLik(fit1))
+print(logLik(fit2))
+print(logLik(fit3))
+print(logLik(fit4))
 
 # for each HMM, compute the Bayesian information criterion (BIC) = measure of complexity of model
 # NOTE: want highest log-like and lowest BIC
@@ -63,7 +68,17 @@ print(BIC(fit2))
 print(BIC(fit3))
 print(BIC(fit4))
 
-# goal is to find the intercept of the two plots for log-likelihood
-# and BIC values respectively so as to determine the best model (avoiding overfitting).
+# BIC and log-likelihood values for all fits
+BIC_val <- c(BIC(fit1), BIC(fit2), BIC(fit3), BIC(fit4))
+logLik_val <- c(logLik(fit1), logLik(fit2), logLik(fit3), logLik(fit4))
+
+# plot BIC values
+plot(1:4, BIC_val, type = "b", col = "blue", xlab = "Model", ylab = "BIC", ylim = range(c(BIC_values, logLik_values)))
+
+# add log-likelihood values
+lines(1:4, logLik_val, type = "b", col = "red", lty = 2)
+
+legend("topright", legend = c("BIC", "Log-Likelihood"), col = c("blue", "red"), lty = c(1, 2))
+
 
 
