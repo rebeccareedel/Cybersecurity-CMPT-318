@@ -68,17 +68,23 @@ print(BIC(fit2))
 print(BIC(fit3))
 print(BIC(fit4))
 
-# BIC and log-likelihood values for all fits
-BIC_val <- c(BIC(fit1), BIC(fit2), BIC(fit3), BIC(fit4))
-logLik_val <- c(logLik(fit1), logLik(fit2), logLik(fit3), logLik(fit4))
+# Collect BIC and log-likelihood values for all fits
+BIC_values <- c(BIC(fit1), BIC(fit2), BIC(fit3), BIC(fit4))
+logLik_values <- c(logLik(fit1), logLik(fit2), logLik(fit3), logLik(fit4))
 
-# plot BIC values
-plot(1:4, BIC_val, type = "b", col = "blue", xlab = "Model", ylab = "BIC", ylim = range(c(BIC_values, logLik_values)))
+# Create a data frame with model numbers, BIC, and log-likelihood values
+model_data <- data.frame(Model = 1:4, BIC = BIC_values, LogLik = logLik_values)
 
-# add log-likelihood values
-lines(1:4, logLik_val, type = "b", col = "red", lty = 2)
+library(ggplot2)
 
-legend("topright", legend = c("BIC", "Log-Likelihood"), col = c("blue", "red"), lty = c(1, 2))
-
-
+# Use ggplot to plot BIC and log-likelihood values on the same graph
+ggplot(model_data, aes(x = Model)) +
+  geom_line(aes(y = BIC, color = "BIC"), linetype = "solid") +
+  geom_line(aes(y = LogLik, color = "Log-Likelihood"), linetype = "dashed") +
+  scale_color_manual(values = c("BIC" = "blue", "Log-Likelihood" = "red")) +
+  labs(x = "Model", y = "Values") +
+  theme_minimal() +
+  ggtitle("Comparison of BIC and Log-Likelihood for Models") +
+  geom_vline(xintercept = which(diff(sign(BIC_values - logLik_values)) != 0), linetype = "dotted", color = "green") +
+  annotate("point", x = which(diff(sign(BIC_values - logLik_values)) != 0), y = BIC_values[which(diff(sign(BIC_values - logLik_values)) != 0)], color = "green")
 
