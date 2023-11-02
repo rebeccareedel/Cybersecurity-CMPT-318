@@ -80,8 +80,8 @@ model_data <- data.frame(Model = 1:4, BIC = BIC_values, LogLik = LLH_values)
 
 # Plot BIC and log-likelihood values
 ggplot(model_data, aes(x = Model)) +
-  geom_line(aes(y = BIC, color = "BIC"), linetype = "solid", size = 0.5) +
-  geom_line(aes(y = LogLik, color = "Log-Likelihood"), linetype = "solid", linewidth = 0.5) +
+  geom_line(aes(y = BIC, color = "BIC"), linetype = "solid", linewidth = 1) +
+  geom_line(aes(y = LogLik, color = "Log-Likelihood"), linetype = "solid", linewidth = 1) +
   scale_color_manual(values = c("BIC" = "darkblue", "Log-Likelihood" = "orange")) +
   labs(x = "Model", y = "Values") +
   theme_minimal() +
