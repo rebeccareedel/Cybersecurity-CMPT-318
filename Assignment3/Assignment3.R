@@ -80,11 +80,11 @@ model_data <- data.frame(Model = 1:4, BIC = BIC_values, LogLik = LLH_values)
 
 # Plot BIC and log-likelihood values
 ggplot(model_data, aes(x = Model)) +
-  geom_line(aes(y = BIC, color = "BIC"), linetype = "solid") +
-  geom_line(aes(y = LogLik, color = "Log-Likelihood"), linetype = "dashed") +
-  scale_color_manual(values = c("BIC" = "blue", "Log-Likelihood" = "red")) +
+  geom_line(aes(y = BIC, color = "BIC"), linetype = "solid", size = 1.5) +
+  geom_line(aes(y = LogLik, color = "Log-Likelihood"), linetype = "dashed", size = 1.5) +
+  scale_color_manual(values = c("BIC" = "darkblue", "Log-Likelihood" = "orange")) +
   labs(x = "Model", y = "Values") +
   theme_minimal() +
-  ggtitle("Comparison of BIC and Log-Likelihood for Models") +
-  geom_vline(xintercept = best_model_index, linetype = "dotted", color = "green")
-
+  ggtitle("BIC and Log-Likelihood Model Comparisons") +
+  theme(plot.title = element_text(face = "bold")) +
+  geom_vline(xintercept = best_model_index, linetype = "dotted", color = "turquoise", size = 1.5)
