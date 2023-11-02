@@ -1,9 +1,10 @@
 # CMPT318 Assignment 3
-# Authors: Mrinal Goshalia, Rebecca Reedel, Asmita Srivastava (Student No. 301436340)
+# Authors: Mrinal Goshalia, Rebecca Reedel, Asmita Srivastava
 install.packages("depmixS4")
 library(depmixS4)
 library(tidyverse)
 library(dplyr)
+library(ggplot2)
 
 # read table
 data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',') 
@@ -16,7 +17,6 @@ data$weekday = strftime(data$Date, format = "%a")
 
 # scale data
 scaled_data = data %>% mutate(across(where(is.numeric), scale))
-print(scaled_data)
 
 data_mon = scaled_data[scaled_data$weekday == 'Mon' & scaled_data$weekno == '01', ]
 data_monall = scaled_data[scaled_data$weekday == 'Mon', ]
@@ -62,33 +62,21 @@ print(logLik(fit3))
 print(logLik(fit4))
 
 # for each HMM, compute the Bayesian information criterion (BIC) = measure of complexity of model
-# NOTE: want highest log-like and lowest BIC
 print(BIC(fit1))
 print(BIC(fit2))
 print(BIC(fit3))
 print(BIC(fit4))
+# NOTE: want highest log-like and lowest BIC
+#plot(1:4,c(BIC(fit1),BIC(fit2),BIC(fit3),BIC(fit4)),ty="b")
 # Collect BIC and log-likelihood values for all fits
 BIC_values <- c(BIC(fit1), BIC(fit2), BIC(fit3), BIC(fit4))
-logLik_values <- c(logLik(fit1), logLik(fit2), logLik(fit3), logLik(fit4))
-
+print(BIC_values)
+LLH_values <- c(logLik(fit1), logLik(fit2), logLik(fit3), logLik(fit4))
+print(LLH_values)
 # Find the index of the minimum absolute difference between BIC and log-likelihood
-best_model_index <- which.min(abs(BIC_values - logLik_values))
-
-# Extract the model number where the intercept occurs
-best_model <- best_model_index + 3*best_model_index  # add 3*index, because indexing starts from 1 and you have models incremented by 4
-
-# Print the index and model number with the best balance
-cat("The best model is at index:", best_model_index, "with model number:", best_model)
-
-library(ggplot2)
-
-# Assuming BIC_values and logLik_values are defined as per the previous calculation
-
+best_model_index <- which.max(abs(BIC_values - LLH_values))
 # Create a data frame with model numbers, BIC, and log-likelihood values
-model_data <- data.frame(Model = 1:4, BIC = BIC_values, LogLik = logLik_values)
-
-# Calculate the minimum difference index
-best_model_index <- which.min(abs(BIC_values - logLik_values))
+model_data <- data.frame(Model = 1:4, BIC = BIC_values, LogLik = LLH_values)
 
 # Plot BIC and log-likelihood values
 ggplot(model_data, aes(x = Model)) +
@@ -98,6 +86,5 @@ ggplot(model_data, aes(x = Model)) +
   labs(x = "Model", y = "Values") +
   theme_minimal() +
   ggtitle("Comparison of BIC and Log-Likelihood for Models") +
-  geom_vline(xintercept = best_model_index, linetype = "dotted", color = "green") +
-  annotate("point", x = best_model_index, y = BIC_values[best_model_index], color = "green")
+  geom_vline(xintercept = best_model_index, linetype = "dotted", color = "green")
 
