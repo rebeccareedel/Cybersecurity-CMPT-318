@@ -75,7 +75,7 @@ logLik_values <- c(logLik(fit1), logLik(fit2), logLik(fit3), logLik(fit4))
 best_model_index <- which.min(abs(BIC_values - logLik_values))
 
 # Extract the model number where the intercept occurs
-best_model <- best_model_index + 2  # Adding 2 because indexing starts from 1 and you have 4 models
+best_model <- best_model_index + 3*best_model_index  # add 3*index, because indexing starts from 1 and you have models incremented by 4
 
 # Print the index and model number with the best balance
 cat("The best model is at index:", best_model_index, "with model number:", best_model)
