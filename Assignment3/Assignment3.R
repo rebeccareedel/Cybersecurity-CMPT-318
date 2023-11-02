@@ -73,7 +73,7 @@ BIC_values <- c(BIC(fit1), BIC(fit2), BIC(fit3), BIC(fit4))
 print(BIC_values)
 LLH_values <- c(logLik(fit1), logLik(fit2), logLik(fit3), logLik(fit4))
 print(LLH_values)
-# Find the index of the minimum absolute difference between BIC and log-likelihood
+# Find the index of the maximum absolute difference between BIC and log-likelihood
 best_model_index <- which.max(abs(BIC_values - LLH_values))
 # Create a data frame with model numbers, BIC, and log-likelihood values
 model_data <- data.frame(Model = 1:4, BIC = BIC_values, LogLik = LLH_values)
