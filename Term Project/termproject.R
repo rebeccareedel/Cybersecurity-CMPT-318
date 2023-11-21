@@ -20,14 +20,13 @@ data$weekday = strftime(data$Date, format = "%a")
 
 # scale data
 scaled_data = data %>% mutate(across(where(is.numeric), scale))
-
-#make a seperate data frame for numeric response variables to undergo PCA
-scaled_data = scaled_data[c("Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")]
 scaled_data = na.omit(scaled_data)
+
 # For deciding on the subset of variables that are most suitable for training your models,
 # you need to perform a Principal Component Analysis (PCA)
-pca = prcomp(scaled_data, scale = TRUE)
+pca = prcomp(scaled_data[c("Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")], scale = TRUE)
 summary(pca)
+
 # Choose a subset of the response variables for training of multivariate
 # HMMs on normal electricity consumption data. 
 
