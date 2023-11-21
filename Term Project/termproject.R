@@ -29,3 +29,34 @@ scaled_data = data %>% mutate(across(where(is.numeric), scale))
 
 # Provide a 1 proper rational for your final choice of response variables based on your PCA results. 
 
+
+# PART 2. HMM TRAINING AND TESTING
+
+# Partition your scaled data into train and test. 
+
+# Choose a weekday or a weekend day and a time window between 2 to 6 hours on that day. 
+
+# For this time window, train various multivariate Hidden Markov Models on the train data with different
+# numbers of states. For models with at least 4 and not more than 24 states -- not for every number of states
+
+# compare the results of log-likelihood and BIC to select the ‘best performing’ model(s) with
+# an overall good fit on the train data. 
+
+# Finally, calculate the log-likelihood of the test data for your selected models to decide on the best one 
+
+# Note that you need to compare normalized log-likelihood of the train data and the test data.
+# Hint: For calculating the log-likelihood of the test data, look at the fit-section on Page 15
+# and the forwardbackward-section on Page 21.
+
+
+# PART 3. ANOMALY DETECTION
+
+# Using the above multivariate HMM, compute the log-likelihood for the
+# respective observation sequences associated with the same time window in each of three
+# datasets with injected anomalies that are provided on the course page under Term Project.
+
+# That is, for each dataset compute the log-likelihood over all instances of the time window
+# over one full year. 
+
+# Compare and interpret the three datasets regarding the degree of
+# anomalies present in each of the datasets in some detail.
