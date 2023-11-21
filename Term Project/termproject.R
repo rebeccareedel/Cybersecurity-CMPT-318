@@ -12,6 +12,14 @@ data = read.table('TermProjectData.txt', header =TRUE, sep =',')
 # PART 1. FEATURE ENGINEERING
 
 # scale the raw data using standardization prior to applying PCA.
+# convert data to be numeric
+data$Date = as.Date(data$Date, '%d/%m/%Y')
+data$Time = as.POSIXct(data$Time, format = '%H:%M:%S')
+data$weekno = strftime(data$Date, format = "%V")
+data$weekday = strftime(data$Date, format = "%a")
+
+# scale data
+scaled_data = data %>% mutate(across(where(is.numeric), scale))
 
 # For deciding on the subset of variables that are most suitable for training your models,
 # you need to perform a Principal Component Analysis (PCA)
@@ -20,3 +28,4 @@ data = read.table('TermProjectData.txt', header =TRUE, sep =',')
 # HMMs on normal electricity consumption data. 
 
 # Provide a 1 proper rational for your final choice of response variables based on your PCA results. 
+

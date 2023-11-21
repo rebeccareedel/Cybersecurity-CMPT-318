@@ -10,8 +10,8 @@ library(ggplot2)
 data = read.table('Group_Assignment_1_Dataset.txt', header =TRUE, sep =',') 
 
 # convert data to be numeric
-data$Date = as.Date(data$Date, '%d/%m/%Y')
-data$Time = as.POSIXct(data$Time, format = '%H:%M:%S')
+data$Date = as.numeric(data$Date, '%d/%m/%Y')
+data$Time = as.numeric(data$Time, format = '%H:%M:%S')
 data$weekno = strftime(data$Date, format = "%V")
 data$weekday = strftime(data$Date, format = "%a")
 
