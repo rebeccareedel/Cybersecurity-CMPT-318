@@ -1,10 +1,14 @@
 # CMPT318 Term Project Part 1
 # Authors: Mrinal Goshalia, Rebecca Reedel, Asmita Srivastava
 install.packages("depmixS4")
+install.packages("devtools")
+library(devtools)
+install_github("vqv/ggbiplot")
 library(depmixS4)
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(ggbiplot)
 
 # read table
 data = read.table('TermProjectData.txt', header =TRUE, sep =',') 
@@ -26,6 +30,9 @@ scaled_data = na.omit(scaled_data)
 # you need to perform a Principal Component Analysis (PCA)
 pca = prcomp(scaled_data[c("Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")], scale = TRUE)
 summary(pca)
+
+#Plot the PCA results using ggbiplot
+ggbiplot(pca)
 
 # Choose a subset of the response variables for training of multivariate
 # HMMs on normal electricity consumption data. 
