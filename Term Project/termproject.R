@@ -28,11 +28,22 @@ scaled_data = na.omit(scaled_data)
 
 # For deciding on the subset of variables that are most suitable for training your models,
 # you need to perform a Principal Component Analysis (PCA)
-pca = prcomp(scaled_data[c("Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")], scale = TRUE)
+response_variables = scaled_data[c("Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")]
+pca = prcomp(scaled_data[c("Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")], center = TRUE, scale = TRUE)
 summary(pca)
 
 #Plot the PCA results using ggbiplot
-ggbiplot(pca)
+biplot = ggbiplot(pcobj = pca,
+                  choices = c(1,2),
+                  obs.scale = 1, var.scale = 1,  # Scaling of axis
+                  labels = row.names(response_variables),     # Add labels as rownames
+                  labels.size = 4,
+                  varname.size = 5,
+                  varname.abbrev = TRUE,  # Abbreviate variable names (TRUE)
+                  var.axes = FALSE,      # Remove variable vectors (TRUE)
+                  circle = FALSE,        # Add unit variance circle (TRUE)
+                  ellipse = TRUE, groups = response_variables) # Adding ellipses
+print(biplot)
 
 # Choose a subset of the response variables for training of multivariate
 # HMMs on normal electricity consumption data. 
