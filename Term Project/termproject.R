@@ -2,8 +2,8 @@
 # Authors: Mrinal Goshalia, Rebecca Reedel, Asmita Srivastava
 install.packages("depmixS4")
 install.packages("devtools")
-install_github("vqv/ggbiplot")
 library(devtools)
+install_github("vqv/ggbiplot")
 library(depmixS4)
 library(tidyverse)
 library(dplyr)
