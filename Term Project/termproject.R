@@ -2,8 +2,8 @@
 # Authors: Mrinal Goshalia, Rebecca Reedel, Asmita Srivastava
 install.packages("depmixS4")
 install.packages("devtools")
-library(devtools)
 install_github("vqv/ggbiplot")
+library(devtools)
 library(depmixS4)
 library(tidyverse)
 library(dplyr)
@@ -32,8 +32,9 @@ response_variables = scaled_data[c("Global_active_power", "Global_reactive_power
 pca = prcomp(response_variables, center = TRUE, scale. = FALSE)
 summary(pca)
 #ggbiplot(pca)
-#Plot the PCA results using ggbiplot
-ggbiplot(pcobj = pca,
+
+# Plot the PCA results using ggbiplot
+ggbiplot(pca,
          choices = c(1,2),
          obs.scale = 1, var.scale = 1,  # Scaling of axis
          labels.size = 4,
@@ -51,19 +52,54 @@ ggbiplot(pcobj = pca,
 
 # PART 2. HMM TRAINING AND TESTING
 
-# Partition your scaled data into train and test. 
-
 # Choose a weekday or a weekend day and a time window between 2 to 6 hours on that day. 
+data_monall = scaled_data[scaled_data$weekday == 'Mon']
+time_window = data_monall[data_monall$Time >= "2023-11-01 10:00:00" & data_monall$Time < "2023-11-01 14:00:00", ]
+time_window = subset(time_window, select = c(Time, Global_reactive_power)) # MODIFY WITH PCA RESP VARIABLES
+time_window = na.omit(time_window)
+
+# Partition your scaled data into train and test. 
 
 # For this time window, train various multivariate Hidden Markov Models on the train data with different
 # numbers of states. For models with at least 4 and not more than 24 states -- not for every number of states
+n = rep(c(240),each=52)
+model1 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 4, ntimes = n)
+fit1 <- fit(model1)
+summary(fit1)
+
+model2 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 8, ntimes = n)
+fit2 <- fit(model2)
+summary(fit2)
+
+model3 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 12, ntimes = n)
+fit3 <- fit(model3)
+summary(fit3)
+
+model4 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 16, ntimes = n)
+fit4 <- fit(model4)
+summary(fit4)
+
+# For each HMM, compute the log-likelihood measure on the training dataset
+print(logLik(fit1))
+print(logLik(fit2))
+print(logLik(fit3))
+print(logLik(fit4))
+
+# for each HMM, compute the Bayesian information criterion (BIC) = measure of complexity of model
+print(BIC(fit1))
+print(BIC(fit2))
+print(BIC(fit3))
+print(BIC(fit4))
 
 # compare the results of log-likelihood and BIC to select the ‘best performing’ model(s) with
 # an overall good fit on the train data. 
+# NOTE: want highest log-like and lowest BIC
+
+# make HMM with n_states that was best performing -> with test data
 
 # Finally, calculate the log-likelihood of the test data for your selected models to decide on the best one 
+# NOTE: that you need to compare normalized log-likelihood of the train data and the test data.
 
-# Note that you need to compare normalized log-likelihood of the train data and the test data.
 # Hint: For calculating the log-likelihood of the test data, look at the fit-section on Page 15
 # and the forwardbackward-section on Page 21.
 
