@@ -44,14 +44,21 @@ ggbiplot(pcobj = pca,
          ellipse = TRUE) # Adding ellipses
 
 # Choose a subset of the response variables for training of multivariate
+subset = scaled_data[c("Date", "Time", "weekday", "Global_active_power", "Global_reactive_power")]
 # HMMs on normal electricity consumption data. 
 
 # Provide a 1 proper rational for your final choice of response variables based on your PCA results. 
-
+#PC1 + PC2 = 70% of data representation (approximately)
 
 # PART 2. HMM TRAINING AND TESTING
 
 # Partition your scaled data into train and test. 
+#Test-Train-Split Code adapted from https://www.statology.org/train-test-split-r/
+
+#use 60% of dataset as training set and 40% as test set
+sample <- sample(c(TRUE, FALSE), nrow(subset), replace=TRUE, prob=c(0.6,0.4))
+train  <- subset[sample, ]
+test   <- subset[!sample, ]
 
 # Choose a weekday or a weekend day and a time window between 2 to 6 hours on that day. 
 
