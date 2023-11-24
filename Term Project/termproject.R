@@ -57,26 +57,26 @@ subset = scaled_data[c("Date", "Time", "weekday", "Global_active_power", "Global
 # Choose a weekday or a weekend day and a time window between 2 to 6 hours on that day. 
 data_monall = subset[subset$weekday == 'Mon',]
 time_window = data_monall[data_monall$Time >= "2023-11-23 10:00:00" & data_monall$Time < "2023-11-23 14:00:00", ]
-time_window = subset(time_window, select = c(Time, Global_reactive_power, Voltage)) # MODIFY WITH PCA RESP VARIABLES
+time_window = subset(time_window, select = c(Time, Global_active_power, Global_reactive_power, Voltage)) # MODIFY WITH PCA RESP VARIABLES
 time_window = na.omit(time_window)
 
 # Partition your scaled data into train and test. 
 #Test-Train-Split Code adapted from https://www.statology.org/train-test-split-r/
 #use 60% of dataset as training set and 40% as test set
-sample <- sample(c(TRUE, FALSE), nrow(subset), replace=TRUE, prob=c(0.6,0.4))
-train  <- subset[sample, ]
-test   <- subset[!sample, ]
+sample <- sample(c(TRUE, FALSE), nrow(time_window), replace=TRUE, prob=c(0.6,0.4))
+train  <- time_window[sample, ]
+test   <- time_window[!sample, ]
 
 # Partition your scaled data into train and test. 
 
 # For this time window, train various multivariate Hidden Markov Models on the train data with different
 # numbers of states. For models with at least 4 and not more than 24 states -- not for every number of states
 n = rep(c(240),each=52)
-model1 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 4, ntimes = n)
+model1 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 4, ntimes = n)
 fit1 <- fit(model1)
 summary(fit1)
 
-model2 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 8, ntimes = n)
+model2 <- depmix(response = Global_reactive_power ~ 1, data = train, nstates = 8, ntimes = n)
 fit2 <- fit(model2)
 summary(fit2)
 
