@@ -55,16 +55,19 @@ subset = scaled_data[c("Date", "Time", "weekday", "weekno", "Global_active_power
 # PART 2. HMM TRAINING AND TESTING
 
 # Choose a weekday or a weekend day and a time window between 2 to 6 hours on that day. 
-data_monall = subset[subset$weekday == 'Mon',] #155 mondays
-time_window = data_monall[data_monall$Time >= "2023-11-23 06:00:00" & data_monall$Time < "2023-11-23 10:00:00", ]
+data_wedall = subset[subset$weekday == 'Wed',] #154 wednesdays between 2006 and 2009
+time_window = data_wedall[data_wedall$Time >= "2023-11-23 00:00:00" & data_monall$Time < "2023-11-23 04:00:00", ]
 
-time_window = subset(time_window, select = c(Time, weekno, Global_active_power, Global_reactive_power, Voltage)) # MODIFY WITH PCA RESP VARIABLES
+time_window = subset(time_window, select = c(Date,Time, weekno, Global_active_power, Global_reactive_power, Voltage)) # MODIFY WITH PCA RESP VARIABLES
 time_window = na.omit(time_window)
-
+#nrow(time_window)
 # Partition your scaled data into train and test. 
 #Test-Train-Split Code adapted from https://www.statology.org/train-test-split-r/
 #use 60% of dataset as training set and 40% as test set
-sample <- sample(c(TRUE, FALSE), nrow(time_window), replace=TRUE, prob=c(0.6,0.4))
+#make this example reproducible
+set.seed(1)
+
+sample <- sample(c(TRUE, FALSE), nrow(time_window), replace=TRUE, prob=c(0.7,0.3))
 train  <- time_window[sample, ]
 test   <- time_window[!sample, ]
 
@@ -72,20 +75,22 @@ test   <- time_window[!sample, ]
 
 # For this time window, train various multivariate Hidden Markov Models on the train data with different
 # numbers of states. For models with at least 4 and not more than 24 states -- not for every number of states
-n = rep(c(240),each=108)
-model1 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = time_window, nstates = 4, ntimes = n)
+#n = rep(c(240),each=108)
+n_times = aggregate(Time ~ Date, train, FUN = length)$Time
+
+model1 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 4, ntimes = n_times)
 fit1 <- fit(model1)
 summary(fit1)
 
-model2 <- depmix(response = Global_reactive_power ~ 1, data = train, nstates = 8, ntimes = n)
+model2 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 8, ntimes = n_times)
 fit2 <- fit(model2)
 summary(fit2)
 
-model3 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 12, ntimes = n)
+model3 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 12, ntimes = n)
 fit3 <- fit(model3)
 summary(fit3)
 
-model4 <- depmix(response = Global_reactive_power ~ 1, data = time_window, nstates = 16, ntimes = n)
+model4 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 16, ntimes = n)
 fit4 <- fit(model4)
 summary(fit4)
 
