@@ -31,7 +31,7 @@ plot(data_monall$Time, data_monall$Global_reactive_power)
 # Extract the same time window for each week of the dataset
 
 time_window = data_monall[data_monall$Time >= "2023-11-01 10:00:00" & data_monall$Time < "2023-11-01 14:00:00", ]
-time_window = subset(time_window, select = c(Time, Global_reactive_power))
+time_window = subset(time_window, select = c(Time, Global_active_power, Global_reactive_power, Voltage))
 time_window = na.omit(time_window)
 
 # train a number of univariate HMMs, with number of states >=3, <=16
