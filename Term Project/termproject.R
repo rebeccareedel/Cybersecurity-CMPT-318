@@ -24,7 +24,7 @@ data$weekday = strftime(data$Date, format = "%a")
 
 # scale data
 scaled_data = data %>% mutate(across(where(is.numeric), scale))
-scaled_data = na.omit(scaled_data)
+#scaled_data = na.omit(scaled_data)
 
 # For deciding on the subset of variables that are most suitable for training your models,
 # you need to perform a Principal Component Analysis (PCA)
@@ -45,7 +45,7 @@ ggbiplot(pca,
          ellipse = TRUE) # Adding ellipses
 
 # Choose a subset of the response variables for training of multivariate
-subset = scaled_data[c("Date", "Time", "weekday", "Global_active_power", "Global_reactive_power", "Voltage")]
+subset = scaled_data[c("Date", "Time", "weekday", "weekno", "Global_active_power", "Global_reactive_power", "Voltage")]
 
 # HMMs on normal electricity consumption data. 
 
@@ -55,9 +55,10 @@ subset = scaled_data[c("Date", "Time", "weekday", "Global_active_power", "Global
 # PART 2. HMM TRAINING AND TESTING
 
 # Choose a weekday or a weekend day and a time window between 2 to 6 hours on that day. 
-data_monall = subset[subset$weekday == 'Mon',]
-time_window = data_monall[data_monall$Time >= "2023-11-23 10:00:00" & data_monall$Time < "2023-11-23 14:00:00", ]
-time_window = subset(time_window, select = c(Time, Global_active_power, Global_reactive_power, Voltage)) # MODIFY WITH PCA RESP VARIABLES
+data_monall = subset[subset$weekday == 'Mon',] #155 mondays
+time_window = data_monall[data_monall$Time >= "2023-11-23 06:00:00" & data_monall$Time < "2023-11-23 10:00:00", ]
+
+time_window = subset(time_window, select = c(Time, weekno, Global_active_power, Global_reactive_power, Voltage)) # MODIFY WITH PCA RESP VARIABLES
 time_window = na.omit(time_window)
 
 # Partition your scaled data into train and test. 
@@ -71,8 +72,8 @@ test   <- time_window[!sample, ]
 
 # For this time window, train various multivariate Hidden Markov Models on the train data with different
 # numbers of states. For models with at least 4 and not more than 24 states -- not for every number of states
-n = rep(c(240),each=52)
-model1 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 4, ntimes = n)
+n = rep(c(240),each=108)
+model1 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = time_window, nstates = 4, ntimes = n)
 fit1 <- fit(model1)
 summary(fit1)
 
