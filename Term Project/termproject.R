@@ -36,7 +36,7 @@ summary(pca)
 var = get_pca_var(pca)
 head(var$contrib, 4)
 
-# code to get percentage involved plot
+# code to get percentage involved plot of eigenvalues
 fviz_eig(pca, addlabels = TRUE, ylim = c(0, 50))
 
 # plots the biplot of the PCA results -- basic version
@@ -150,6 +150,12 @@ print(BIC(fit10))
 # NOTE: want highest log-like and lowest BIC
 
 # make HMM with n_states that was best performing -> with test data
+n_times = aggregate(Time ~ Date, test, FUN = length)$Time
+
+model1_test <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = test, nstates = 4, ntimes = n_times)
+fit1_test <- fit(model1_test)
+fb <- forwardbackward(model1_test)
+print(fb$logLike)
 
 # Finally, calculate the log-likelihood of the test data for your selected models to decide on the best one 
 # NOTE: that you need to compare normalized log-likelihood of the train data and the test data.
