@@ -23,6 +23,7 @@ data$weekday = strftime(data$Date, format = "%a")
 
 # scale the raw data using standardization prior to applying PCA.
 scaled_data = data %>% mutate(across(where(is.numeric), scale))
+scaled_data = na.omit(scaled_data)
 
 # perform a Principal Component Analysis (PCA)
 response_variables = scaled_data[c("Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")]
@@ -52,13 +53,13 @@ subset = scaled_data[c("Date", "Time", "weekday", "weekno", "Global_active_power
 
 # Choose a weekday or a weekend day and a time window between 2 to 6 hours on that day. 
 data_wedall = subset[subset$weekday == 'Wed',] #154 wednesdays between 2006 and 2009
-time_window = data_wedall[data_wedall$Time >= "2023-11-24 00:00:00" & data_wedall$Time < "2023-11-24 04:00:00", ] # MODIFY FOR DATE U RUN
+time_window = data_wedall[data_wedall$Time >= "2023-11-25 00:00:00" & data_wedall$Time < "2023-11-25 04:00:00", ] # MODIFY FOR DATE U RUN
 time_window = subset(time_window, select = c(Date,Time, weekno, Global_active_power, Global_reactive_power, Voltage)) 
 time_window = na.omit(time_window)
 
 # Test-Train-Split Code adapted from https://www.statology.org/train-test-split-r/
 # use 70% of dataset as training set and 30% as test set
-set.seed(1) # make this example reproducible
+#set.seed(1) # make this example reproducible
 
 sample <- sample(c(TRUE, FALSE), nrow(time_window), replace=TRUE, prob=c(0.7,0.3))
 train  <- time_window[sample, ]
