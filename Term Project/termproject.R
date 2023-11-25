@@ -31,23 +31,28 @@ scaled_data = na.omit(scaled_data)
 response_variables = scaled_data[c("Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")]
 pca = prcomp(response_variables, center = TRUE, scale. = FALSE)
 summary(pca)
-#code to get contribution factor table. 
+
+# code to get contribution factor table. 
 var = get_pca_var(pca)
 head(var$contrib, 4)
-#ggbiplot(pca)
 
-# Plot the PCA results using ggbiplot
-'''
-ggbiplot(pca,
-         choices = c(1,2),
-         obs.scale = 1, var.scale = 1,  # Scaling of axis
-         labels.size = 4,
-         varname.size = 5,
-         varname.abbrev = TRUE,  # Abbreviate variable names (TRUE)
-         var.axes = FALSE,      # Remove variable vectors (TRUE)
-         circle = FALSE,        # Add unit variance circle (TRUE)
-         ellipse = TRUE) # Adding ellipses
-'''
+# code to get percentage involved plot
+fviz_eig(pca, addlabels = TRUE, ylim = c(0, 50))
+
+# plots the biplot of the PCA results -- basic version
+# ggbiplot(pca)
+
+# Plot the PCA results using biplot
+#ggbiplot(pca,
+        # choices = c(1,2),
+       #  obs.scale = 1, var.scale = 1,  # Scaling of axis
+        # labels.size = 4,
+        # varname.size = 5,
+        # varname.abbrev = TRUE,  # Abbreviate variable names (TRUE)
+         #var.axes = FALSE,      # Remove variable vectors (TRUE)
+         #circle = FALSE,        # Add unit variance circle (TRUE)
+         #ellipse = TRUE) # Adding ellipses
+
 # subset of the response variables for training of HMM on normal electricity consumption
 subset = scaled_data[c("Date", "Time", "weekday", "weekno", "Global_active_power", "Global_reactive_power", "Global_intensity")]
 
