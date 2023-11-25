@@ -121,6 +121,11 @@ model10 <- depmix(response = Global_active_power + Global_reactive_power + Globa
 fit10 <- fit(model10)
 summary(fit10)
 
+
+model11 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 23, ntimes = n_times)
+fit11 <- fit(model11)
+summary(fit11)
+
 # For each HMM, compute the log-likelihood measure on the training dataset
 print(logLik(fit1))
 print(logLik(fit2))
@@ -132,6 +137,7 @@ print(logLik(fit7))
 print(logLik(fit8))
 print(logLik(fit9))
 print(logLik(fit10))
+print(logLik(fit11))
 
 # for each HMM, compute the Bayesian information criterion (BIC) = measure of complexity of model
 print(BIC(fit1))
@@ -144,24 +150,28 @@ print(BIC(fit7))
 print(BIC(fit8))
 print(BIC(fit9))
 print(BIC(fit10))
+print(BIC(fit11))
 
-# compare the results of log-likelihood and BIC to select the ‘best performing’ model(s) with
-# an overall good fit on the train data. 
-# NOTE: want highest log-like and lowest BIC
-
-# make HMM with n_states that was best performing -> with test data
+# make HMM with n_states that was best performing -> with test data = n_states 21, 23, 24
 n_times = aggregate(Time ~ Date, test, FUN = length)$Time
 
-model1_test <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = test, nstates = 4, ntimes = n_times)
-fit1_test <- fit(model1_test)
-fb <- forwardbackward(model1_test)
-print(fb$logLike)
+# n_states = 21
+model21_test <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = test, nstates = 21, ntimes = n_times)
+fit21_test <- fit(model21_test)
+fb21 <- forwardbackward(model21_test) # use forward-backward for log-likelihood
+print(fb21$logLike)
 
-# Finally, calculate the log-likelihood of the test data for your selected models to decide on the best one 
-# NOTE: that you need to compare normalized log-likelihood of the train data and the test data.
+# n_states = 23
+model23_test <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = test, nstates = 23, ntimes = n_times)
+fit23_test <- fit(model23_test)
+fb23 <- forwardbackward(model23_test)
+print(fb23$logLike)
 
-# Hint: For calculating the log-likelihood of the test data, look at the fit-section on Page 15
-# and the forwardbackward-section on Page 21.
+# n_states = 24
+model24_test <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = test, nstates = 24, ntimes = n_times)
+fit24_test <- fit(model24_test)
+fb24 <- forwardbackward(model24_test)
+print(fb24$logLike)
 
 
 # PART 3. ANOMALY DETECTION
