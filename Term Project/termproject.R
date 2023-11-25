@@ -121,7 +121,6 @@ model10 <- depmix(response = Global_active_power + Global_reactive_power + Globa
 fit10 <- fit(model10)
 summary(fit10)
 
-
 model11 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 23, ntimes = n_times)
 fit11 <- fit(model11)
 summary(fit11)
@@ -153,25 +152,18 @@ print(BIC(fit10))
 print(BIC(fit11))
 
 # make HMM with n_states that was best performing -> with test data = n_states 21, 23, 24
-n_times = aggregate(Time ~ Date, test, FUN = length)$Time
 
 # n_states = 21
-model21_test <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = test, nstates = 21, ntimes = n_times)
-fit21_test <- fit(model21_test)
-fb21 <- forwardbackward(model21_test) # use forward-backward for log-likelihood
+fb21 <- forwardbackward(fit9, data = test)# use forward-backward for log-likelihood
+print(fb21$logLike)
+ 
+# n_states = 23
+fb21 <- forwardbackward(fit11, data = test)# use forward-backward for log-likelihood
 print(fb21$logLike)
 
-# n_states = 23
-model23_test <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = test, nstates = 23, ntimes = n_times)
-fit23_test <- fit(model23_test)
-fb23 <- forwardbackward(model23_test)
-print(fb23$logLike)
-
 # n_states = 24
-model24_test <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = test, nstates = 24, ntimes = n_times)
-fit24_test <- fit(model24_test)
-fb24 <- forwardbackward(model24_test)
-print(fb24$logLike)
+fb21 <- forwardbackward(fit6, data = test)# use forward-backward for log-likelihood
+print(fb21$logLike)
 
 
 # PART 3. ANOMALY DETECTION
@@ -197,28 +189,19 @@ anom_data3 = anom_data3[anom_data3$Time >= "2023-11-25 00:00:00" & anom_data3$Ti
 anom_data3 = subset(anom_data3, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data3 = na.omit(anom_data3)
 
-# Using the above multivariate HMM, compute the log-likelihood in each of three
-# datasets with injected anomalies that are provided on the course page under Term Project.
+# Using the above multivariate HMM, (model w/ n_states = 21) compute the log-likelihood of each anomalous dataset
 
-n_times = aggregate(Time ~ Date, anom_data1, FUN = length)$Time
-anom_model1 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data1, nstates = 21, ntimes = n_times)
-fit1 <- fit(anom_model1)
-summary(fit1)
+# data set 1
+data1 <- forwardbackward(fit9, data = anom_data1)# use forward-backward for log-likelihood
+print(data1$logLike)
 
-n_times = aggregate(Time ~ Date, anom_data2, FUN = length)$Time
-anom_model2 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data2, nstates = 21, ntimes = n_times)
-fit2 <- fit(anom_model2)
-summary(fit2)
+# data set 2
+data2 <- forwardbackward(fit9, data = anom_data2)# use forward-backward for log-likelihood
+print(data2$logLike)
 
-n_times = aggregate(Time ~ Date, anom_data3, FUN = length)$Time
-anom_model3 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data3, nstates = 21, ntimes = n_times)
-fit3 <- fit(anom_model3)
-summary(fit3)
-
-# compute the log-likelihood over all instances of the time window
-print(logLik(fit1))
-print(logLik(fit2))
-print(logLik(fit3))
+# data set 3
+data3 <- forwardbackward(fit9, data = anom_data3)# use forward-backward for log-likelihood
+print(data3$logLike)
 
 # Compare and interpret the three datasets regarding the degree of
 # anomalies present in each of the datasets in some detail.
