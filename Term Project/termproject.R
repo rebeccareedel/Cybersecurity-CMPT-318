@@ -123,12 +123,31 @@ print(BIC(fit6))
 
 # PART 3. ANOMALY DETECTION
 
-# Using the above multivariate HMM, compute the log-likelihood for the
-# respective observation sequences associated with the same time window in each of three
+# get all 3 injected anomalous data sets
+anom_data1 = read.table('DataWithAnomalies1.txt', header =TRUE, sep =',') 
+anom_data2 = read.table('DataWithAnomalies2.txt', header =TRUE, sep =',')
+anom_data3 = read.table('DataWithAnomalies3.txt', header =TRUE, sep =',')
+
+# filter data -- so only instances of our time frame
+anom_data1 = anom_data1[anom_data1$weekday == 'Wed',]
+anom_data1 = anom_data1[anom_data1$Time >= "2023-11-24 00:00:00" & anom_data1$Time < "2023-11-24 04:00:00", ] 
+anom_data1 = subset(anom_data1, select = c(Date,Time, Global_active_power, Global_reactive_power, Voltage)) 
+anom_data1 = na.omit(anom_data1)
+
+anom_data2 = anom_data2[anom_data2$weekday == 'Wed',]
+anom_data2 = anom_data2[anom_data2$Time >= "2023-11-24 00:00:00" & anom_data2$Time < "2023-11-24 04:00:00", ] 
+anom_data2 = subset(anom_data2, select = c(Date,Time, Global_active_power, Global_reactive_power, Voltage)) 
+anom_data2 = na.omit(anom_data2)
+
+anom_data3 = anom_data3[anom_data3$weekday == 'Wed',]
+anom_data3 = anom_data3[anom_data3$Time >= "2023-11-24 00:00:00" & anom_data3$Time < "2023-11-24 04:00:00", ] 
+anom_data3 = subset(anom_data3, select = c(Date,Time, Global_active_power, Global_reactive_power, Voltage)) 
+anom_data3 = na.omit(anom_data3)
+
+# Using the above multivariate HMM, compute the log-likelihood in each of three
 # datasets with injected anomalies that are provided on the course page under Term Project.
 
-# That is, for each dataset compute the log-likelihood over all instances of the time window
-# over one full year. 
+# compute the log-likelihood over all instances of the time window
 
 # Compare and interpret the three datasets regarding the degree of
 # anomalies present in each of the datasets in some detail.
