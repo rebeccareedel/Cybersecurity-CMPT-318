@@ -2,6 +2,7 @@
 # Authors: Mrinal Goshalia, Rebecca Reedel, Asmita Srivastava
 install.packages("depmixS4")
 install.packages("devtools")
+install.packages("factoextra")
 library(devtools)
 install_github("vqv/ggbiplot")
 library(depmixS4)
@@ -9,6 +10,7 @@ library(tidyverse)
 library(dplyr)
 library(ggplot2)
 library(ggbiplot)
+library(factoextra)
 
 # read table
 data = read.table('TermProjectData.txt', header =TRUE, sep =',') 
@@ -29,9 +31,13 @@ scaled_data = na.omit(scaled_data)
 response_variables = scaled_data[c("Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")]
 pca = prcomp(response_variables, center = TRUE, scale. = FALSE)
 summary(pca)
+#code to get contribution factor table. 
+var = get_pca_var(pca)
+head(var$contrib, 4)
 #ggbiplot(pca)
 
 # Plot the PCA results using ggbiplot
+'''
 ggbiplot(pca,
          choices = c(1,2),
          obs.scale = 1, var.scale = 1,  # Scaling of axis
@@ -41,9 +47,9 @@ ggbiplot(pca,
          var.axes = FALSE,      # Remove variable vectors (TRUE)
          circle = FALSE,        # Add unit variance circle (TRUE)
          ellipse = TRUE) # Adding ellipses
-
+'''
 # subset of the response variables for training of HMM on normal electricity consumption
-subset = scaled_data[c("Date", "Time", "weekday", "weekno", "Global_active_power", "Global_reactive_power", "Voltage")]
+subset = scaled_data[c("Date", "Time", "weekday", "weekno", "Global_active_power", "Global_reactive_power", "Global_intensity")]
 
 # Provide a 1 proper rational for your final choice of response variables based on your PCA results. 
 #PC1 + PC2 = 70% of data representation (approximately), plus choosing PC3 = 90% of all the data representation.
@@ -54,12 +60,12 @@ subset = scaled_data[c("Date", "Time", "weekday", "weekno", "Global_active_power
 # Choose a weekday or a weekend day and a time window between 2 to 6 hours on that day. 
 data_wedall = subset[subset$weekday == 'Wed',] #154 wednesdays between 2006 and 2009
 time_window = data_wedall[data_wedall$Time >= "2023-11-25 00:00:00" & data_wedall$Time < "2023-11-25 04:00:00", ] # MODIFY FOR DATE U RUN
-time_window = subset(time_window, select = c(Date,Time, weekno, Global_active_power, Global_reactive_power, Voltage)) 
+time_window = subset(time_window, select = c(Date,Time, weekno, Global_active_power, Global_reactive_power, Global_intensity)) 
 time_window = na.omit(time_window)
 
 # Test-Train-Split Code adapted from https://www.statology.org/train-test-split-r/
 # use 70% of dataset as training set and 30% as test set
-#set.seed(1) # make this example reproducible
+set.seed(1) # make this example reproducible
 
 sample <- sample(c(TRUE, FALSE), nrow(time_window), replace=TRUE, prob=c(0.7,0.3))
 train  <- time_window[sample, ]
@@ -69,43 +75,44 @@ test   <- time_window[!sample, ]
 # numbers of states. For models with at least 4 and not more than 24 states -- not for every number of states
 n_times = aggregate(Time ~ Date, train, FUN = length)$Time
 
-model1 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 4, ntimes = n_times)
+model1 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 4, ntimes = n_times)
 fit1 <- fit(model1)
 summary(fit1)
 
-model2 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 8, ntimes = n_times)
+model2 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 8, ntimes = n_times)
 fit2 <- fit(model2)
 summary(fit2)
 
-model3 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 12, ntimes = n_times)
+model3 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 12, ntimes = n_times)
 fit3 <- fit(model3)
 summary(fit3)
 
-model4 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 16, ntimes = n_times)
+model4 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 16, ntimes = n_times)
 fit4 <- fit(model4)
 summary(fit4)
 
-model5 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 20, ntimes = n_times)
+model5 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 20, ntimes = n_times)
 fit5 <- fit(model5)
 summary(fit5)
 
-model6 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 24, ntimes = n_times)
+model6 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 24, ntimes = n_times)
 fit6 <- fit(model6)
 summary(fit6)
 
-model7 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 18, ntimes = n_times)
+#closely inspect number_states to enhance model performance 
+model7 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 18, ntimes = n_times)
 fit7 <- fit(model7)
 summary(fit7)
 
-model8 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 19, ntimes = n_times)
+model8 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 19, ntimes = n_times)
 fit8 <- fit(model8)
 summary(fit8)
 
-model9 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 21, ntimes = n_times)
+model9 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 21, ntimes = n_times)
 fit9 <- fit(model9)
 summary(fit9)
 
-model10 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 22, ntimes = n_times)
+model10 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = train, nstates = 22, ntimes = n_times)
 fit10 <- fit(model10)
 summary(fit10)
 
@@ -156,17 +163,17 @@ anom_data3 = read.table('DataWithAnomalies3.txt', header =TRUE, sep =',')
 # filter data -- so only instances of our time frame
 anom_data1 = anom_data1[anom_data1$weekday == 'Wed',]
 anom_data1 = anom_data1[anom_data1$Time >= "2023-11-25 00:00:00" & anom_data1$Time < "2023-11-24 04:00:00", ] 
-anom_data1 = subset(anom_data1, select = c(Date,Time, Global_active_power, Global_reactive_power, Voltage)) 
+anom_data1 = subset(anom_data1, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data1 = na.omit(anom_data1)
 
 anom_data2 = anom_data2[anom_data2$weekday == 'Wed',]
 anom_data2 = anom_data2[anom_data2$Time >= "2023-11-25 00:00:00" & anom_data2$Time < "2023-11-24 04:00:00", ] 
-anom_data2 = subset(anom_data2, select = c(Date,Time, Global_active_power, Global_reactive_power, Voltage)) 
+anom_data2 = subset(anom_data2, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data2 = na.omit(anom_data2)
 
 anom_data3 = anom_data3[anom_data3$weekday == 'Wed',]
 anom_data3 = anom_data3[anom_data3$Time >= "2023-11-25 00:00:00" & anom_data3$Time < "2023-11-24 04:00:00", ] 
-anom_data3 = subset(anom_data3, select = c(Date,Time, Global_active_power, Global_reactive_power, Voltage)) 
+anom_data3 = subset(anom_data3, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data3 = na.omit(anom_data3)
 
 # Using the above multivariate HMM, compute the log-likelihood in each of three
