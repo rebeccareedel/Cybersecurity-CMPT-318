@@ -173,19 +173,32 @@ anom_data1 = read.table('DataWithAnomalies1.txt', header =TRUE, sep =',')
 anom_data2 = read.table('DataWithAnomalies2.txt', header =TRUE, sep =',')
 anom_data3 = read.table('DataWithAnomalies3.txt', header =TRUE, sep =',')
 
+# convert values and add weekday column
+anom_data1$Date = as.Date(anom_data1$Date, '%d/%m/%Y')
+anom_data1$Time = as.POSIXct(anom_data1$Time, format = '%H:%M:%S')
+anom_data1$weekday = strftime(anom_data1$Date, format = "%a")
+
+anom_data2$Date = as.Date(anom_data2$Date, '%d/%m/%Y')
+anom_data2$Time = as.POSIXct(anom_data2$Time, format = '%H:%M:%S')
+anom_data2$weekday = strftime(anom_data2$Date, format = "%a")
+
+anom_data3$Date = as.Date(anom_data3$Date, '%d/%m/%Y')
+anom_data3$Time = as.POSIXct(anom_data3$Time, format = '%H:%M:%S')
+anom_data3$weekday = strftime(anom_data3$Date, format = "%a")
+
 # filter data -- so only instances of our time frame
 anom_data1 = anom_data1[anom_data1$weekday == 'Wed',]
-anom_data1 = anom_data1[anom_data1$Time >= "2023-11-25 00:00:00" & anom_data1$Time < "2023-11-24 04:00:00", ] 
+anom_data1 = anom_data1[anom_data1$Time >= "2023-11-25 00:00:00" & anom_data1$Time < "2023-11-25 04:00:00", ] 
 anom_data1 = subset(anom_data1, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data1 = na.omit(anom_data1)
 
 anom_data2 = anom_data2[anom_data2$weekday == 'Wed',]
-anom_data2 = anom_data2[anom_data2$Time >= "2023-11-25 00:00:00" & anom_data2$Time < "2023-11-24 04:00:00", ] 
+anom_data2 = anom_data2[anom_data2$Time >= "2023-11-25 00:00:00" & anom_data2$Time < "2023-11-25 04:00:00", ] 
 anom_data2 = subset(anom_data2, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data2 = na.omit(anom_data2)
 
 anom_data3 = anom_data3[anom_data3$weekday == 'Wed',]
-anom_data3 = anom_data3[anom_data3$Time >= "2023-11-25 00:00:00" & anom_data3$Time < "2023-11-24 04:00:00", ] 
+anom_data3 = anom_data3[anom_data3$Time >= "2023-11-25 00:00:00" & anom_data3$Time < "2023-11-25 04:00:00", ] 
 anom_data3 = subset(anom_data3, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data3 = na.omit(anom_data3)
 
