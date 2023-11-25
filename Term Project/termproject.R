@@ -97,6 +97,18 @@ model7 <- depmix(response = Global_active_power + Global_reactive_power + Voltag
 fit7 <- fit(model7)
 summary(fit7)
 
+model8 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 19, ntimes = n_times)
+fit8 <- fit(model8)
+summary(fit8)
+
+model9 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 21, ntimes = n_times)
+fit9 <- fit(model9)
+summary(fit9)
+
+model10 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 22, ntimes = n_times)
+fit10 <- fit(model10)
+summary(fit10)
+
 # For each HMM, compute the log-likelihood measure on the training dataset
 print(logLik(fit1))
 print(logLik(fit2))
@@ -105,6 +117,9 @@ print(logLik(fit4))
 print(logLik(fit5))
 print(logLik(fit6))
 print(logLik(fit7))
+print(logLik(fit8))
+print(logLik(fit9))
+print(logLik(fit10))
 
 # for each HMM, compute the Bayesian information criterion (BIC) = measure of complexity of model
 print(BIC(fit1))
@@ -114,6 +129,9 @@ print(BIC(fit4))
 print(BIC(fit5))
 print(BIC(fit6))
 print(BIC(fit7))
+print(BIC(fit8))
+print(BIC(fit9))
+print(BIC(fit10))
 
 # compare the results of log-likelihood and BIC to select the ‘best performing’ model(s) with
 # an overall good fit on the train data. 
