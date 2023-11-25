@@ -200,7 +200,25 @@ anom_data3 = na.omit(anom_data3)
 # Using the above multivariate HMM, compute the log-likelihood in each of three
 # datasets with injected anomalies that are provided on the course page under Term Project.
 
+n_times = aggregate(Time ~ Date, anom_data1, FUN = length)$Time
+anom_model1 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data1, nstates = 21, ntimes = n_times)
+fit1 <- fit(anom_model1)
+summary(fit1)
+
+n_times = aggregate(Time ~ Date, anom_data2, FUN = length)$Time
+anom_model2 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data2, nstates = 21, ntimes = n_times)
+fit2 <- fit(anom_model2)
+summary(fit2)
+
+n_times = aggregate(Time ~ Date, anom_data3, FUN = length)$Time
+anom_model3 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data3, nstates = 21, ntimes = n_times)
+fit3 <- fit(anom_model3)
+summary(fit3)
+
 # compute the log-likelihood over all instances of the time window
+print(logLik(fit1))
+print(logLik(fit2))
+print(logLik(fit3))
 
 # Compare and interpret the three datasets regarding the degree of
 # anomalies present in each of the datasets in some detail.
