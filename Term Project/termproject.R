@@ -93,6 +93,10 @@ model6 <- depmix(response = Global_active_power + Global_reactive_power + Voltag
 fit6 <- fit(model6)
 summary(fit6)
 
+model7 <- depmix(response = Global_active_power + Global_reactive_power + Voltage ~ 1, data = train, nstates = 18, ntimes = n_times)
+fit7 <- fit(model7)
+summary(fit7)
+
 # For each HMM, compute the log-likelihood measure on the training dataset
 print(logLik(fit1))
 print(logLik(fit2))
@@ -100,6 +104,7 @@ print(logLik(fit3))
 print(logLik(fit4))
 print(logLik(fit5))
 print(logLik(fit6))
+print(logLik(fit7))
 
 # for each HMM, compute the Bayesian information criterion (BIC) = measure of complexity of model
 print(BIC(fit1))
@@ -108,6 +113,7 @@ print(BIC(fit3))
 print(BIC(fit4))
 print(BIC(fit5))
 print(BIC(fit6))
+print(BIC(fit7))
 
 # compare the results of log-likelihood and BIC to select the ‘best performing’ model(s) with
 # an overall good fit on the train data. 
@@ -131,17 +137,17 @@ anom_data3 = read.table('DataWithAnomalies3.txt', header =TRUE, sep =',')
 
 # filter data -- so only instances of our time frame
 anom_data1 = anom_data1[anom_data1$weekday == 'Wed',]
-anom_data1 = anom_data1[anom_data1$Time >= "2023-11-24 00:00:00" & anom_data1$Time < "2023-11-24 04:00:00", ] 
+anom_data1 = anom_data1[anom_data1$Time >= "2023-11-25 00:00:00" & anom_data1$Time < "2023-11-24 04:00:00", ] 
 anom_data1 = subset(anom_data1, select = c(Date,Time, Global_active_power, Global_reactive_power, Voltage)) 
 anom_data1 = na.omit(anom_data1)
 
 anom_data2 = anom_data2[anom_data2$weekday == 'Wed',]
-anom_data2 = anom_data2[anom_data2$Time >= "2023-11-24 00:00:00" & anom_data2$Time < "2023-11-24 04:00:00", ] 
+anom_data2 = anom_data2[anom_data2$Time >= "2023-11-25 00:00:00" & anom_data2$Time < "2023-11-24 04:00:00", ] 
 anom_data2 = subset(anom_data2, select = c(Date,Time, Global_active_power, Global_reactive_power, Voltage)) 
 anom_data2 = na.omit(anom_data2)
 
 anom_data3 = anom_data3[anom_data3$weekday == 'Wed',]
-anom_data3 = anom_data3[anom_data3$Time >= "2023-11-24 00:00:00" & anom_data3$Time < "2023-11-24 04:00:00", ] 
+anom_data3 = anom_data3[anom_data3$Time >= "2023-11-25 00:00:00" & anom_data3$Time < "2023-11-24 04:00:00", ] 
 anom_data3 = subset(anom_data3, select = c(Date,Time, Global_active_power, Global_reactive_power, Voltage)) 
 anom_data3 = na.omit(anom_data3)
 
