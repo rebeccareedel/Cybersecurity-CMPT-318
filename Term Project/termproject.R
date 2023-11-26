@@ -205,16 +205,30 @@ anom_data3 = na.omit(anom_data3)
 # Using the above multivariate HMM, (model w/ n_states = 21) compute the log-likelihood of each anomalous dataset
 
 # data set 1
-data1 <- forwardbackward(fit9, data = anom_data1)# use forward-backward for log-likelihood
-print(data1$logLike)
+n_times = aggregate(Time ~ Date, anom_data1, FUN = length)$Time
+anom_model1 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data1, nstates = 21, ntimes = n_times)
+anom_fit1 <- fit(anom_model1)
+summary(anom_fit1)
 
 # data set 2
-data2 <- forwardbackward(fit9, data = anom_data2)# use forward-backward for log-likelihood
-print(data2$logLike)
+n_times = aggregate(Time ~ Date, anom_data2, FUN = length)$Time
+anom_model2 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data2, nstates = 21, ntimes = n_times)
+anom_fit2 <- fit(anom_model2)
+summary(anom_fit2)
 
 # data set 3
-data3 <- forwardbackward(fit9, data = anom_data3)# use forward-backward for log-likelihood
-print(data3$logLike)
+n_times = aggregate(Time ~ Date, anom_data3, FUN = length)$Time
+anom_model3 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data3, nstates = 21, ntimes = n_times)
+anom_fit3 <- fit(anom_model3)
+summary(anom_fit3)
+
+#data3 <- forwardbackward(fit9, data = anom_data3)# use forward-backward for log-likelihood
+#print(data3$logLike)
+
+# compute log-like
+print(logLik(anom_fit1))
+print(logLik(anom_fit2))
+print(logLik(anom_fit3))
 
 # Compare and interpret the three datasets regarding the degree of
 # anomalies present in each of the datasets in some detail.
