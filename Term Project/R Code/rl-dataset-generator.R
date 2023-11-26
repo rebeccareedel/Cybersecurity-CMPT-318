@@ -7,12 +7,7 @@ library(fmsb)
 
 
 states <- as.character(seq(1, 100))
-actions <-
-  c("Stocks",
-    "Real_Estates",
-    "Commodities",
-    "Cryptocurrencies",
-    "Forex")
+actions <- c("Stocks","Real_Estates","Commodities","Cryptocurrencies","Forex")
 
 # profit is a portion of the invested money
 profit <- function(investment)
@@ -93,6 +88,7 @@ market.env <- function(state, action)
   return(out)
 }
 
+
 data <- sampleExperience(
   N = 3000,
   env = market.env,
@@ -101,9 +97,38 @@ data <- sampleExperience(
   actionSelection = "random",
 )
 
+# TASK: train an agent capable of making investment decisions regardless of the budget available.
+
+head(data)
+
+# Explain the hyper parameters of this model (alpha, gamma, epsilon) and how they influence the training process.
+control <- list(alpha = 0.1, gamma = 0.5, epsilon = 0.1)
+
+# Perform reinforcement learning
+model <- ReinforcementLearning(data, 
+                               s = "State", 
+                               a = "Action", 
+                               r = "Reward", 
+                               s_new = "NextState", 
+                               control = control)
+
+
+#Obtain the Q-Table of the trained model and provide your interpretation of this table
+#based on the values of the hyperparameters you chose
+print(model)
+
+#Compute the policy of the model and provide your interpretation.
+computePolicy(model)
+
 
 #### UNSEEN DATA ####
 
 data_unseen <- data.frame(State = as.character(seq(15, 45)),
                           stringsAsFactors = FALSE)
 
+#Apply this model to unseen data and extract the optimal action table for each state
+
+# Pick optimal action
+data_unseen$OptimalAction <- predict(model, data_unseen$State)
+
+data_unseen
