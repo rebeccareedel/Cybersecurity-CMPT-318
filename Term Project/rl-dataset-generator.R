@@ -1,3 +1,5 @@
+# CMPT318 Term Project Part 3
+# Authors: Rebecca Reedel (301454910), Asmita Srivastava (301436340), Mrinal Goshalia (301478325)
 library(ReinforcementLearning)
 library(tidyverse)
 library(ggplot2)
@@ -131,6 +133,6 @@ data_unseen <- data.frame(State = as.character(seq(15, 45)),
 # Pick optimal action
 data_unseen$OptimalAction <- predict(model, data_unseen$State)
 
-data_unseen
 # Print only the reward to 2 decimal places
+print(data_unseen)
 
