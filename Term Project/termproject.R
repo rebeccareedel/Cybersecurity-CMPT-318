@@ -1,5 +1,5 @@
 # CMPT318 Term Project Part 1
-# Authors: Mrinal Goshalia, Rebecca Reedel, Asmita Srivastava
+# Authors: Rebecca Reedel (301454910), Asmita Srivastava (301436340), Mrinal Goshalia (301478325)
 install.packages("depmixS4")
 install.packages("devtools")
 install.packages("factoextra")
@@ -40,7 +40,7 @@ head(var$contrib, 4)
 fviz_eig(pca, addlabels = TRUE, ylim = c(0, 50))
 
 # plots the biplot of the PCA results -- basic version
-# ggbiplot(pca)
+ggbiplot(pca)
 
 # Plot the PCA results using biplot
 #ggbiplot(pca,
@@ -57,14 +57,14 @@ fviz_eig(pca, addlabels = TRUE, ylim = c(0, 50))
 subset = scaled_data[c("Date", "Time", "weekday", "weekno", "Global_active_power", "Global_reactive_power", "Global_intensity")]
 
 # Provide a 1 proper rational for your final choice of response variables based on your PCA results. 
-#PC1 + PC2 = 70% of data representation (approximately), plus choosing PC3 = 90% of all the data representation.
+#PC1 + PC2 = 70% of data representation (approximately), plus choosing PC4 = 90% of all the data representation.
 
 
 # PART 2. HMM TRAINING AND TESTING
 
 # Choose a weekday or a weekend day and a time window between 2 to 6 hours on that day. 
 data_wedall = subset[subset$weekday == 'Wed',] #154 wednesdays between 2006 and 2009
-time_window = data_wedall[data_wedall$Time >= "2023-11-25 00:00:00" & data_wedall$Time < "2023-11-25 04:00:00", ] # MODIFY FOR DATE U RUN
+time_window = data_wedall[data_wedall$Time >= "2023-11-27 00:00:00" & data_wedall$Time < "2023-11-27 04:00:00", ] # MODIFY FOR DATE U RUN
 time_window = subset(time_window, select = c(Date,Time, weekno, Global_active_power, Global_reactive_power, Global_intensity)) 
 time_window = na.omit(time_window)
 
@@ -188,17 +188,17 @@ anom_data3$weekday = strftime(anom_data3$Date, format = "%a")
 
 # filter data -- so only instances of our time frame
 anom_data1 = anom_data1[anom_data1$weekday == 'Wed',]
-anom_data1 = anom_data1[anom_data1$Time >= "2023-11-27 00:00:00" & anom_data1$Time < "2023-11-27 04:00:00", ] 
+anom_data1 = anom_data1[anom_data1$Time >= "2023-11-25 00:00:00" & anom_data1$Time < "2023-11-25 04:00:00", ] 
 anom_data1 = subset(anom_data1, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data1 = na.omit(anom_data1)
 
 anom_data2 = anom_data2[anom_data2$weekday == 'Wed',]
-anom_data2 = anom_data2[anom_data2$Time >= "2023-11-27 00:00:00" & anom_data2$Time < "2023-11-27 04:00:00", ] 
+anom_data2 = anom_data2[anom_data2$Time >= "2023-11-25 00:00:00" & anom_data2$Time < "2023-11-25 04:00:00", ] 
 anom_data2 = subset(anom_data2, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data2 = na.omit(anom_data2)
 
 anom_data3 = anom_data3[anom_data3$weekday == 'Wed',]
-anom_data3 = anom_data3[anom_data3$Time >= "2023-11-27 00:00:00" & anom_data3$Time < "2023-11-27 04:00:00", ] 
+anom_data3 = anom_data3[anom_data3$Time >= "2023-11-25 00:00:00" & anom_data3$Time < "2023-11-25 04:00:00", ] 
 anom_data3 = subset(anom_data3, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data3 = na.omit(anom_data3)
 
@@ -206,30 +206,30 @@ anom_data3 = na.omit(anom_data3)
 
 # data set 1
 n_times = aggregate(Time ~ Date, anom_data1, FUN = length)$Time
-anom_model1 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data1, nstates = 24, ntimes = n_times)
+anom_model1 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data1, nstates = 21, ntimes = n_times)
 anom_fit1 <- fit(anom_model1)
 summary(anom_fit1)
 
 # data set 2
 n_times = aggregate(Time ~ Date, anom_data2, FUN = length)$Time
-anom_model2 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data2, nstates = 24, ntimes = n_times)
+anom_model2 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data2, nstates = 21, ntimes = n_times)
 anom_fit2 <- fit(anom_model2)
 summary(anom_fit2)
 
 # data set 3
 n_times = aggregate(Time ~ Date, anom_data3, FUN = length)$Time
-anom_model3 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data3, nstates = 24, ntimes = n_times)
+anom_model3 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data3, nstates = 21, ntimes = n_times)
 anom_fit3 <- fit(anom_model3)
 summary(anom_fit3)
 
 #data3 <- forwardbackward(fit9, data = anom_data3)# use forward-backward for log-likelihood
 #print(data3$logLike)
 
-# compute log-like
-print(logLik(anom_fit1))
-print(logLik(anom_fit2))
-print(logLik(anom_fit3))
 
 # Compare and interpret the three datasets regarding the degree of
 # anomalies present in each of the datasets in some detail.
 
+# compute log-like - lowest log-likehood means most anomalous data
+print(logLik(anom_fit1))
+print(logLik(anom_fit2))
+print(logLik(anom_fit3))
