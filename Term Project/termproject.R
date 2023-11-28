@@ -188,17 +188,17 @@ anom_data3$weekday = strftime(anom_data3$Date, format = "%a")
 
 # filter data -- so only instances of our time frame
 anom_data1 = anom_data1[anom_data1$weekday == 'Wed',]
-anom_data1 = anom_data1[anom_data1$Time >= "2023-11-25 00:00:00" & anom_data1$Time < "2023-11-25 04:00:00", ] 
+anom_data1 = anom_data1[anom_data1$Time >= "2023-11-27 00:00:00" & anom_data1$Time < "2023-11-27 04:00:00", ] 
 anom_data1 = subset(anom_data1, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data1 = na.omit(anom_data1)
 
 anom_data2 = anom_data2[anom_data2$weekday == 'Wed',]
-anom_data2 = anom_data2[anom_data2$Time >= "2023-11-25 00:00:00" & anom_data2$Time < "2023-11-25 04:00:00", ] 
+anom_data2 = anom_data2[anom_data2$Time >= "2023-11-27 00:00:00" & anom_data2$Time < "2023-11-27 04:00:00", ] 
 anom_data2 = subset(anom_data2, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data2 = na.omit(anom_data2)
 
 anom_data3 = anom_data3[anom_data3$weekday == 'Wed',]
-anom_data3 = anom_data3[anom_data3$Time >= "2023-11-25 00:00:00" & anom_data3$Time < "2023-11-25 04:00:00", ] 
+anom_data3 = anom_data3[anom_data3$Time >= "2023-11-27 00:00:00" & anom_data3$Time < "2023-11-27 04:00:00", ] 
 anom_data3 = subset(anom_data3, select = c(Date,Time, Global_active_power, Global_reactive_power, Global_intensity)) 
 anom_data3 = na.omit(anom_data3)
 
@@ -206,19 +206,19 @@ anom_data3 = na.omit(anom_data3)
 
 # data set 1
 n_times = aggregate(Time ~ Date, anom_data1, FUN = length)$Time
-anom_model1 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data1, nstates = 21, ntimes = n_times)
+anom_model1 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data1, nstates = 24, ntimes = n_times)
 anom_fit1 <- fit(anom_model1)
 summary(anom_fit1)
 
 # data set 2
 n_times = aggregate(Time ~ Date, anom_data2, FUN = length)$Time
-anom_model2 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data2, nstates = 21, ntimes = n_times)
+anom_model2 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data2, nstates = 24, ntimes = n_times)
 anom_fit2 <- fit(anom_model2)
 summary(anom_fit2)
 
 # data set 3
 n_times = aggregate(Time ~ Date, anom_data3, FUN = length)$Time
-anom_model3 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data3, nstates = 21, ntimes = n_times)
+anom_model3 <- depmix(response = Global_active_power + Global_reactive_power + Global_intensity ~ 1, data = anom_data3, nstates = 24, ntimes = n_times)
 anom_fit3 <- fit(anom_model3)
 summary(anom_fit3)
 
@@ -232,3 +232,4 @@ print(logLik(anom_fit3))
 
 # Compare and interpret the three datasets regarding the degree of
 # anomalies present in each of the datasets in some detail.
+
