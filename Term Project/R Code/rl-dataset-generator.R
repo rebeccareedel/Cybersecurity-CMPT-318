@@ -102,7 +102,7 @@ data <- sampleExperience(
 head(data)
 
 # Explain the hyper parameters of this model (alpha, gamma, epsilon) and how they influence the training process.
-control <- list(alpha = 0.1, gamma = 0.5, epsilon = 0.1)
+control <- list(alpha = 0.2, gamma = 0.6, epsilon = 0.2)
 
 # Perform reinforcement learning
 model <- ReinforcementLearning(data, 
@@ -132,3 +132,5 @@ data_unseen <- data.frame(State = as.character(seq(15, 45)),
 data_unseen$OptimalAction <- predict(model, data_unseen$State)
 
 data_unseen
+# Print only the reward to 2 decimal places
+
